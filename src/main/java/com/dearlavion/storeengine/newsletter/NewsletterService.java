@@ -11,6 +11,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.Instant;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Service
@@ -53,19 +54,22 @@ public class NewsletterService {
         return Map.of("subscribed", true, "alreadySubscribed", alreadySubscribed);
     }
 
-    /** Fire-and-forget: a notification-service outage should never fail the subscribe request
-     * itself — the subscriber is already saved by the time this runs. */
+    /** Fire-and-forget: dispatched on the common ForkJoinPool (not the request thread) so a slow
+     * SMTP send or a notification-service outage never adds latency to — or fails — the subscribe
+     * response itself. The subscriber is already saved by the time this runs. */
     private void sendThanksEmail(String email) {
-        try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("X-Internal-Api-Key", internalApiKey);
-            restTemplate.postForObject(
-                    notificationServiceUrl + "/notification/internal/newsletter-thanks",
-                    new HttpEntity<>(Map.of("email", email), headers),
-                    Void.class
-            );
-        } catch (Exception e) {
-            log.error("newsletter thank-you email failed for {}: {}", email, e.getMessage());
-        }
+        CompletableFuture.runAsync(() -> {
+            try {
+                HttpHeaders headers = new HttpHeaders();
+                headers.set("X-Internal-Api-Key", internalApiKey);
+                restTemplate.postForObject(
+                        notificationServiceUrl + "/notification/internal/newsletter-thanks",
+                        new HttpEntity<>(Map.of("email", email), headers),
+                        Void.class
+                );
+            } catch (Exception e) {
+                log.error("newsletter thank-you email failed for {}: {}", email, e.getMessage());
+            }
+        });
     }
 }
