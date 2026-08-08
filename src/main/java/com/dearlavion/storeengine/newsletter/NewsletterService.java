@@ -1,34 +1,20 @@
 package com.dearlavion.storeengine.newsletter;
 
+import com.dearlavion.storeengine.common.NotificationClient;
 import com.dearlavion.storeengine.newsletter.model.NewsletterSubscriber;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.time.Instant;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
-@Slf4j
 @Service
+@RequiredArgsConstructor
 public class NewsletterService {
 
     private final NewsletterSubscriberRepository repository;
-    private final RestTemplate restTemplate = new RestTemplate();
-
-    @Value("${app.notification-service-url}")
-    private String notificationServiceUrl;
-
-    @Value("${app.internal-api-key}")
-    private String internalApiKey;
-
-    public NewsletterService(NewsletterSubscriberRepository repository) {
-        this.repository = repository;
-    }
+    private final NotificationClient notificationClient;
 
     /** Upsert by email — subscribing twice (e.g. a repeat PDF download, or a race between two
      * concurrent requests for the same email) is a no-op, not an error, and never re-sends the
@@ -44,7 +30,7 @@ public class NewsletterService {
             subscriber.setSubscribedAt(Instant.now());
             try {
                 repository.save(subscriber);
-                sendThanksEmail(normalized);
+                notificationClient.postAsync("/notification/internal/newsletter-thanks", Map.of("email", normalized));
             } catch (DuplicateKeyException ignored) {
                 // Another concurrent request just inserted the same email — treat as a resubscribe,
                 // not a new one (that request already triggered the thank-you email).
@@ -52,24 +38,5 @@ public class NewsletterService {
             }
         }
         return Map.of("subscribed", true, "alreadySubscribed", alreadySubscribed);
-    }
-
-    /** Fire-and-forget: dispatched on the common ForkJoinPool (not the request thread) so a slow
-     * SMTP send or a notification-service outage never adds latency to — or fails — the subscribe
-     * response itself. The subscriber is already saved by the time this runs. */
-    private void sendThanksEmail(String email) {
-        CompletableFuture.runAsync(() -> {
-            try {
-                HttpHeaders headers = new HttpHeaders();
-                headers.set("X-Internal-Api-Key", internalApiKey);
-                restTemplate.postForObject(
-                        notificationServiceUrl + "/notification/internal/newsletter-thanks",
-                        new HttpEntity<>(Map.of("email", email), headers),
-                        Void.class
-                );
-            } catch (Exception e) {
-                log.error("newsletter thank-you email failed for {}: {}", email, e.getMessage());
-            }
-        });
     }
 }

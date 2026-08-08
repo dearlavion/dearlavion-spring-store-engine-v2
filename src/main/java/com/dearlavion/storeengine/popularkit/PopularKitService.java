@@ -1,7 +1,10 @@
 package com.dearlavion.storeengine.popularkit;
 
+import com.dearlavion.storeengine.common.NotificationClient;
 import com.dearlavion.storeengine.common.Slugify;
 import com.dearlavion.storeengine.common.exception.NotFoundException;
+import com.dearlavion.storeengine.newsletter.NewsletterSubscriberRepository;
+import com.dearlavion.storeengine.newsletter.model.NewsletterSubscriber;
 import com.dearlavion.storeengine.popularkit.model.PopularKit;
 import com.dearlavion.storeengine.popularkit.request.CreatePopularKitRequest;
 import com.dearlavion.storeengine.popularkit.request.UpdatePopularKitRequest;
@@ -11,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +22,8 @@ public class PopularKitService {
 
     private final PopularKitRepository repository;
     private final PopularKitMapper mapper;
+    private final NewsletterSubscriberRepository newsletterRepository;
+    private final NotificationClient notificationClient;
 
     /** Public homepage listing — active kits only, oldest first (stable curation order). */
     public List<PopularKit> listPublic() {
@@ -37,7 +43,24 @@ public class PopularKitService {
     }
 
     public PopularKit create(CreatePopularKitRequest dto) {
-        return repository.save(mapper.toEntity(dto, uniqueSlug(dto.name())));
+        PopularKit kit = repository.save(mapper.toEntity(dto, uniqueSlug(dto.name())));
+        announceNewKit(kit);
+        return kit;
+    }
+
+    /** Notifies every current newsletter subscriber that a new Popular Kit was just published —
+     * once per creation, never for update()/deactivate(). Fire-and-forget via NotificationClient,
+     * so a slow batch send (or notification-service being down) never delays the admin's response. */
+    private void announceNewKit(PopularKit kit) {
+        List<String> emails = newsletterRepository.findAll().stream().map(NewsletterSubscriber::getEmail).toList();
+        if (emails.isEmpty()) return;
+        notificationClient.postAsync("/notification/internal/popular-kit-announcement", Map.of(
+                "emails", emails,
+                "kitName", kit.getName(),
+                "kitSlug", kit.getSlug(),
+                "image", kit.getImage(),
+                "tag", kit.getTag()
+        ));
     }
 
     /** Slug stays stable across renames (it's the curated id), matching how products behave. */
