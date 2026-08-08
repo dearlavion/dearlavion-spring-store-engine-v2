@@ -1,5 +1,6 @@
 package com.dearlavion.storeengine.product;
 
+import com.dearlavion.storeengine.product.model.ProductFilter;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;

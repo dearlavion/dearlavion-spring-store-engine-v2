@@ -1,7 +1,10 @@
 package com.dearlavion.storeengine.stats;
 
-import com.dearlavion.storeengine.productitem.ProductItem;
 import com.dearlavion.storeengine.productitem.ProductItemRepository;
+import com.dearlavion.storeengine.productitem.model.ProductItem;
+import com.dearlavion.storeengine.stats.model.SalesRow;
+import com.dearlavion.storeengine.stats.response.ProductItemStat;
+import com.dearlavion.storeengine.stats.response.TopSellingItem;
 import lombok.RequiredArgsConstructor;
 import org.bson.Document;
 import org.springframework.data.mongodb.core.MongoTemplate;

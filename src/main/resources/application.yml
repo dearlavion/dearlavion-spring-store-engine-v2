@@ -5,7 +5,12 @@ spring:
       # service uses) — deliberately avoids polluting real data with iterative test writes.
       # Point at the shared DB only for the Phase 4 parity diff, right before cutover.
       uri: ${MONGODB_URI:mongodb://localhost:27017/dearlavion-spring-store-engine-v2-dev}
-      auto-index-creation: true
+      # Indexes already exist on the shared DB (created by the original NestJS/Mongoose service),
+      # often under different auto-generated names for the same key pattern (e.g. Mongoose's
+      # "userId_1" vs Spring Data's default "userId") — auto-creation on startup would either
+      # collide with those (IndexOptionsConflict) or silently declare parallel indexes. Let the
+      # existing indexes serve as the constraint layer instead of re-declaring them here.
+      auto-index-creation: false
   main:
     allow-circular-references: true
   jackson:

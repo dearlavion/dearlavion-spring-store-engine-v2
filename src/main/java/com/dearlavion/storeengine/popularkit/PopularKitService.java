@@ -2,6 +2,9 @@ package com.dearlavion.storeengine.popularkit;
 
 import com.dearlavion.storeengine.common.Slugify;
 import com.dearlavion.storeengine.common.exception.NotFoundException;
+import com.dearlavion.storeengine.popularkit.model.PopularKit;
+import com.dearlavion.storeengine.popularkit.request.CreatePopularKitRequest;
+import com.dearlavion.storeengine.popularkit.request.UpdatePopularKitRequest;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
@@ -14,6 +17,7 @@ import java.util.List;
 public class PopularKitService {
 
     private final PopularKitRepository repository;
+    private final PopularKitMapper mapper;
 
     /** Public homepage listing — active kits only, oldest first (stable curation order). */
     public List<PopularKit> listPublic() {
@@ -33,35 +37,13 @@ public class PopularKitService {
     }
 
     public PopularKit create(CreatePopularKitRequest dto) {
-        Instant now = Instant.now();
-        PopularKit kit = new PopularKit();
-        kit.setName(dto.name().trim());
-        kit.setSlug(uniqueSlug(dto.name()));
-        kit.setTag(dto.tag() != null ? dto.tag() : "");
-        kit.setImage(dto.image() != null ? dto.image() : "");
-        kit.setDestination(dto.destination() != null ? dto.destination() : "");
-        kit.setSeason(dto.season() != null ? dto.season() : "");
-        kit.setParty(dto.party() != null ? dto.party() : "");
-        kit.setDuration(dto.duration() != null ? dto.duration() : "");
-        kit.setProductIds(dto.productIds() != null ? dto.productIds() : List.of());
-        kit.setActive(true);
-        kit.setCreatedAt(now);
-        kit.setUpdatedAt(now);
-        return repository.save(kit);
+        return repository.save(mapper.toEntity(dto, uniqueSlug(dto.name())));
     }
 
     /** Slug stays stable across renames (it's the curated id), matching how products behave. */
     public PopularKit update(String id, UpdatePopularKitRequest dto) {
         PopularKit kit = getByIdOrSlug(id);
-        if (dto.name() != null) kit.setName(dto.name().trim());
-        if (dto.tag() != null) kit.setTag(dto.tag());
-        if (dto.image() != null) kit.setImage(dto.image());
-        if (dto.destination() != null) kit.setDestination(dto.destination());
-        if (dto.season() != null) kit.setSeason(dto.season());
-        if (dto.party() != null) kit.setParty(dto.party());
-        if (dto.duration() != null) kit.setDuration(dto.duration());
-        if (dto.productIds() != null) kit.setProductIds(dto.productIds());
-        kit.setUpdatedAt(Instant.now());
+        mapper.applyPatch(kit, dto);
         return repository.save(kit);
     }
 

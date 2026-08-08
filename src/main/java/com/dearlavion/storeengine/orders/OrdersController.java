@@ -1,5 +1,10 @@
 package com.dearlavion.storeengine.orders;
 
+import com.dearlavion.storeengine.orders.model.Order;
+import com.dearlavion.storeengine.orders.model.OrderItem;
+import com.dearlavion.storeengine.orders.model.Shipping;
+import com.dearlavion.storeengine.orders.request.MarkPaymentPendingRequest;
+import com.dearlavion.storeengine.orders.request.PlaceOrderRequest;
 import com.dearlavion.storeengine.security.AuthenticatedUser;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,34 +20,14 @@ import java.util.List;
 public class OrdersController {
 
     private final OrdersService service;
+    private final OrdersMapper mapper;
 
     /** Record a placed order (called by checkout). */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Order place(@AuthenticationPrincipal AuthenticatedUser user, @Valid @RequestBody PlaceOrderRequest dto) {
-        List<OrderItem> items = dto.items().stream().map(i -> {
-            OrderItem item = new OrderItem();
-            item.setProductId(i.productId());
-            item.setProductItemId(i.productItemId());
-            item.setBrand(i.brand());
-            item.setName(i.name());
-            item.setIcon(i.icon() != null ? i.icon() : "");
-            item.setQuantity(i.quantity());
-            item.setPrice(i.price());
-            item.setCurrency(i.currency() != null ? i.currency() : (dto.currency() != null ? dto.currency() : "USD"));
-            item.setInventoryUpdated(false);
-            return item;
-        }).toList();
-
-        Shipping shipping = null;
-        if (dto.shipping() != null) {
-            shipping = new Shipping();
-            shipping.setFullName(dto.shipping().fullName());
-            shipping.setEmail(dto.shipping().email());
-            shipping.setAddress(dto.shipping().address());
-            shipping.setCity(dto.shipping().city());
-            shipping.setPostalCode(dto.shipping().postalCode());
-        }
+        List<OrderItem> items = mapper.toOrderItems(dto);
+        Shipping shipping = mapper.toShipping(dto.shipping());
 
         return service.place(user.userId(), new OrdersService.PlaceOrderInput(
                 items, shipping, dto.total(), dto.shippingFee(), dto.currency(), dto.reference(),

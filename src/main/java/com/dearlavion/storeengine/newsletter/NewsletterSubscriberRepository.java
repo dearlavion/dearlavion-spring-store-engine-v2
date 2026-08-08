@@ -1,5 +1,6 @@
 package com.dearlavion.storeengine.newsletter;
 
+import com.dearlavion.storeengine.newsletter.model.NewsletterSubscriber;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;

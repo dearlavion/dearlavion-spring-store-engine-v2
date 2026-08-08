@@ -1,13 +1,15 @@
 package com.dearlavion.storeengine.cart;
 
-import com.dearlavion.storeengine.productitem.ProductItem;
+import com.dearlavion.storeengine.cart.model.Cart;
+import com.dearlavion.storeengine.cart.model.CartItem;
+import com.dearlavion.storeengine.cart.response.CartView;
+import com.dearlavion.storeengine.productitem.model.ProductItem;
 import com.dearlavion.storeengine.productitem.ProductItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -17,6 +19,7 @@ public class CartService {
 
     private final CartRepository repository;
     private final ProductItemService productItems;
+    private final CartMapper mapper;
 
     private Cart getOrCreate(String userId) {
         return repository.findByUserId(userId).orElseGet(() -> {
@@ -27,23 +30,8 @@ public class CartService {
         });
     }
 
-    /** Cart enriched with product-item snapshots + a computed subtotal, for the UI. A cart line's
-     * `productId` is a ProductItem id (the specific purchasable SKU/brand chosen), not a Product id. */
     public CartView view(String userId) {
-        Cart cart = getOrCreate(userId);
-        List<CartItemView> items = cart.getItems().stream().map(i -> {
-            ProductItem product;
-            try {
-                product = productItems.getById(i.getProductId());
-            } catch (Exception e) {
-                product = null;
-            }
-            double lineTotal = (product != null ? product.getPrice() : 0) * i.getQuantity();
-            return new CartItemView(i.getProductId(), i.getQuantity(), product, lineTotal);
-        }).toList();
-        double subtotal = items.stream().mapToDouble(CartItemView::lineTotal).sum();
-        int itemCount = items.stream().mapToInt(CartItemView::quantity).sum();
-        return new CartView(userId, items, subtotal, itemCount);
+        return mapper.toView(userId, getOrCreate(userId));
     }
 
     /** Add (or increment) an item. Validates the product item exists. */

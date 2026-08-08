@@ -1,5 +1,6 @@
 package com.dearlavion.storeengine.popularkit;
 
+import com.dearlavion.storeengine.popularkit.model.PopularKit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

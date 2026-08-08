@@ -3,6 +3,10 @@ package com.dearlavion.storeengine.product;
 import com.dearlavion.storeengine.common.PageResponse;
 import com.dearlavion.storeengine.common.Slugify;
 import com.dearlavion.storeengine.common.exception.NotFoundException;
+import com.dearlavion.storeengine.product.model.Product;
+import com.dearlavion.storeengine.product.model.ProductFilter;
+import com.dearlavion.storeengine.product.request.CreateProductRequest;
+import com.dearlavion.storeengine.product.request.UpdateProductRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -18,6 +22,7 @@ public class ProductService {
 
     private final ProductRepository repository;
     private final MongoTemplate mongoTemplate;
+    private final ProductMapper mapper;
 
     public PageResponse<Product> list(ProductFilter f) {
         int page = f.page() != null ? f.page() : 0;
@@ -50,26 +55,7 @@ public class ProductService {
     // ---- admin ----
 
     public Product create(CreateProductRequest dto) {
-        Instant now = Instant.now();
-        Product product = new Product();
-        product.setId(uniqueId(dto.name()));
-        product.setName(dto.name());
-        product.setCategory(dto.category());
-        product.setDescription(dto.description());
-        product.setIcon(dto.icon());
-        product.setPopular(dto.popular() != null && dto.popular());
-        product.setTested(dto.tested() != null && dto.tested());
-        product.setDestinations(dto.destinations() != null ? dto.destinations() : List.of("All"));
-        product.setSeasons(dto.seasons() != null ? dto.seasons() : List.of("All"));
-        product.setParties(dto.parties() != null ? dto.parties() : List.of("All"));
-        product.setActivities(dto.activities() != null ? dto.activities() : List.of());
-        product.setTransportModes(dto.transportModes() != null ? dto.transportModes() : List.of());
-        product.setKitCategory(dto.kitCategory());
-        product.setActive(true);
-        product.setLinkedProductIds(dto.linkedProductIds() != null ? dto.linkedProductIds() : List.of());
-        product.setCreatedAt(now);
-        product.setUpdatedAt(now);
-        return repository.save(product);
+        return repository.save(mapper.toEntity(dto, uniqueId(dto.name())));
     }
 
     /** id is fixed at creation and never changes here, even when dto.name() renames the product —
@@ -77,21 +63,7 @@ public class ProductService {
      * PopularKit/Product.linkedProductIds, saved carts/kits) on a simple rename. */
     public Product update(String id, UpdateProductRequest dto) {
         Product product = requireById(id);
-        if (dto.name() != null) product.setName(dto.name());
-        if (dto.category() != null) product.setCategory(dto.category());
-        if (dto.description() != null) product.setDescription(dto.description());
-        if (dto.icon() != null) product.setIcon(dto.icon());
-        if (dto.popular() != null) product.setPopular(dto.popular());
-        if (dto.tested() != null) product.setTested(dto.tested());
-        if (dto.destinations() != null) product.setDestinations(dto.destinations());
-        if (dto.seasons() != null) product.setSeasons(dto.seasons());
-        if (dto.parties() != null) product.setParties(dto.parties());
-        if (dto.activities() != null) product.setActivities(dto.activities());
-        if (dto.transportModes() != null) product.setTransportModes(dto.transportModes());
-        if (dto.kitCategory() != null) product.setKitCategory(dto.kitCategory());
-        if (dto.active() != null) product.setActive(dto.active());
-        if (dto.linkedProductIds() != null) product.setLinkedProductIds(dto.linkedProductIds());
-        product.setUpdatedAt(Instant.now());
+        mapper.applyPatch(product, dto);
         return repository.save(product);
     }
 

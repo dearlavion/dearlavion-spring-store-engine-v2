@@ -1,5 +1,7 @@
 package com.dearlavion.storeengine.profile;
 
+import com.dearlavion.storeengine.profile.model.UserProfile;
+import com.dearlavion.storeengine.profile.request.UpdateProfileRequest;
 import com.dearlavion.storeengine.security.AuthenticatedUser;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

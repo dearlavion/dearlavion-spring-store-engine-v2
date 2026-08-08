@@ -1,5 +1,6 @@
 package com.dearlavion.storeengine.taxonomy;
 
+import com.dearlavion.storeengine.taxonomy.model.TaxonomyValue;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

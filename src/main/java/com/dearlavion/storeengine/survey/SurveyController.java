@@ -1,5 +1,7 @@
 package com.dearlavion.storeengine.survey;
 
+import com.dearlavion.storeengine.survey.request.SurveyAnswersRequest;
+import com.dearlavion.storeengine.survey.response.RecommendationsResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,7 +16,7 @@ public class SurveyController {
     private final SurveyService service;
 
     @PostMapping("/survey/recommendations")
-    public SurveyService.RecommendationsResponse recommendations(@Valid @RequestBody SurveyAnswersRequest answers) {
+    public RecommendationsResponse recommendations(@Valid @RequestBody SurveyAnswersRequest answers) {
         return service.recommendations(answers);
     }
 }

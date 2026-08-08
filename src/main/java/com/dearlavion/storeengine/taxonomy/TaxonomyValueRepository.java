@@ -1,5 +1,6 @@
 package com.dearlavion.storeengine.taxonomy;
 
+import com.dearlavion.storeengine.taxonomy.model.TaxonomyValue;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;

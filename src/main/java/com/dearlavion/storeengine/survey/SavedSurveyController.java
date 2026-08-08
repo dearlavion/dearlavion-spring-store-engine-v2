@@ -1,6 +1,8 @@
 package com.dearlavion.storeengine.survey;
 
 import com.dearlavion.storeengine.security.AuthenticatedUser;
+import com.dearlavion.storeengine.survey.model.SavedSurvey;
+import com.dearlavion.storeengine.survey.request.SurveyAnswersRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

@@ -1,5 +1,8 @@
 package com.dearlavion.storeengine.popularkit;
 
+import com.dearlavion.storeengine.popularkit.model.PopularKit;
+import com.dearlavion.storeengine.popularkit.request.CreatePopularKitRequest;
+import com.dearlavion.storeengine.popularkit.request.UpdatePopularKitRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

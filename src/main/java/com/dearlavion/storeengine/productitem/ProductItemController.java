@@ -1,6 +1,9 @@
 package com.dearlavion.storeengine.productitem;
 
 import com.dearlavion.storeengine.common.PageResponse;
+import com.dearlavion.storeengine.productitem.model.ProductItemFilter;
+import com.dearlavion.storeengine.productitem.request.ListProductItemsQuery;
+import com.dearlavion.storeengine.productitem.response.ProductItemView;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

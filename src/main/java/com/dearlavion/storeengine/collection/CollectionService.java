@@ -1,12 +1,14 @@
 package com.dearlavion.storeengine.collection;
 
+import com.dearlavion.storeengine.collection.model.SavedKit;
+import com.dearlavion.storeengine.collection.request.BuiltKitRequest;
+import com.dearlavion.storeengine.collection.request.UpdateSavedKitRequest;
 import com.dearlavion.storeengine.common.Slugify;
 import com.dearlavion.storeengine.common.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -14,6 +16,7 @@ import java.util.List;
 public class CollectionService {
 
     private final SavedKitRepository repository;
+    private final CollectionMapper mapper;
 
     /** The caller's saved kits, newest first. */
     public List<SavedKit> listForUser(String userId) {
@@ -22,16 +25,12 @@ public class CollectionService {
 
     public SavedKit save(String userId, String name, BuiltKitRequest kitDto) {
         String cleanName = name.trim().isEmpty() ? "My kit" : name.trim();
-        BuiltKit kit = new BuiltKit();
-        kit.setItems(toKitItems(kitDto.items()));
-        kit.setSummary(kitDto.summary() != null ? kitDto.summary() : "");
-        kit.setTitle(kitDto.title());
 
         SavedKit savedKit = new SavedKit();
         savedKit.setId(uniqueId(cleanName));
         savedKit.setUserId(userId);
         savedKit.setName(cleanName);
-        savedKit.setKit(kit);
+        savedKit.setKit(mapper.toBuiltKit(kitDto));
         savedKit.setSavedAt(Instant.now());
         return repository.save(savedKit);
     }
@@ -61,7 +60,7 @@ public class CollectionService {
             kit.setName(patch.name().trim().isEmpty() ? "My kit" : patch.name().trim());
         }
         if (patch.items() != null) {
-            kit.getKit().setItems(toKitItems(patch.items()));
+            kit.getKit().setItems(mapper.toKitItems(patch.items()));
         }
         return repository.save(kit);
     }
@@ -70,16 +69,5 @@ public class CollectionService {
         if (repository.deleteByIdAndUserId(id, userId) == 0) {
             throw new NotFoundException("Saved kit not found");
         }
-    }
-
-    private static List<KitItem> toKitItems(List<KitItemRequest> items) {
-        List<KitItem> result = new ArrayList<>();
-        for (KitItemRequest i : items) {
-            KitItem item = new KitItem();
-            item.setLabel(i.label());
-            item.setProductId(i.productId());
-            result.add(item);
-        }
-        return result;
     }
 }

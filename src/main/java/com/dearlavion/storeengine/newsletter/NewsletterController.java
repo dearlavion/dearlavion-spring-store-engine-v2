@@ -1,5 +1,6 @@
 package com.dearlavion.storeengine.newsletter;
 
+import com.dearlavion.storeengine.newsletter.request.SubscribeRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;

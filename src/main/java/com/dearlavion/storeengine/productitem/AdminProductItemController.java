@@ -1,6 +1,10 @@
 package com.dearlavion.storeengine.productitem;
 
 import com.dearlavion.storeengine.product.ProductService;
+import com.dearlavion.storeengine.productitem.model.ProductItem;
+import com.dearlavion.storeengine.productitem.request.AdminListProductItemsQuery;
+import com.dearlavion.storeengine.productitem.request.CreateProductItemRequest;
+import com.dearlavion.storeengine.productitem.request.UpdateProductItemRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

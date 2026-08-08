@@ -1,5 +1,8 @@
 package com.dearlavion.storeengine.storesettings;
 
+import com.dearlavion.storeengine.storesettings.model.StoreSettings;
+import com.dearlavion.storeengine.storesettings.request.UpdateStoreSettingsRequest;
+import com.dearlavion.storeengine.storesettings.response.StoreSettingsView;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,5 +1,6 @@
 package com.dearlavion.storeengine.category;
 
+import com.dearlavion.storeengine.category.model.Category;
 import com.dearlavion.storeengine.common.Slugify;
 import com.dearlavion.storeengine.common.exception.ConflictException;
 import com.dearlavion.storeengine.common.exception.NotFoundException;

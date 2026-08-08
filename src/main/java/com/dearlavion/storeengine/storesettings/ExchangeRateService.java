@@ -1,5 +1,8 @@
 package com.dearlavion.storeengine.storesettings;
 
+import com.dearlavion.storeengine.storesettings.model.Currency;
+import com.dearlavion.storeengine.storesettings.model.ExchangeRate;
+import com.dearlavion.storeengine.storesettings.response.RatesView;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

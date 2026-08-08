@@ -2,9 +2,12 @@ package com.dearlavion.storeengine.orders;
 
 import com.dearlavion.storeengine.common.exception.ConflictException;
 import com.dearlavion.storeengine.common.exception.NotFoundException;
-import com.dearlavion.storeengine.productitem.ProductItem;
+import com.dearlavion.storeengine.orders.model.Order;
+import com.dearlavion.storeengine.orders.model.OrderItem;
+import com.dearlavion.storeengine.orders.model.Shipping;
+import com.dearlavion.storeengine.productitem.model.ProductItem;
 import com.dearlavion.storeengine.productitem.ProductItemService;
-import com.dearlavion.storeengine.productitem.UpdateProductItemRequest;
+import com.dearlavion.storeengine.productitem.request.UpdateProductItemRequest;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;

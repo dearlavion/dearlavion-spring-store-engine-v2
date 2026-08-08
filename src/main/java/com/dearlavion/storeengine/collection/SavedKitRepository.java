@@ -1,5 +1,6 @@
 package com.dearlavion.storeengine.collection;
 
+import com.dearlavion.storeengine.collection.model.SavedKit;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;

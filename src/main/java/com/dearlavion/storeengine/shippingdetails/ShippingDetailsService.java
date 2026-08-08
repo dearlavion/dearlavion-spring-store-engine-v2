@@ -1,5 +1,7 @@
 package com.dearlavion.storeengine.shippingdetails;
 
+import com.dearlavion.storeengine.shippingdetails.model.ShippingDetails;
+import com.dearlavion.storeengine.shippingdetails.request.SaveShippingDetailsRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

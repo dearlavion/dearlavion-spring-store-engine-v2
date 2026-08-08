@@ -1,5 +1,6 @@
 package com.dearlavion.storeengine.popularkit;
 
+import com.dearlavion.storeengine.popularkit.model.PopularKit;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;

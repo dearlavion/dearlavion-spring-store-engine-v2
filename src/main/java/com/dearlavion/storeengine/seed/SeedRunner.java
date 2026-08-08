@@ -1,9 +1,9 @@
 package com.dearlavion.storeengine.seed;
 
 import com.dearlavion.storeengine.category.CategoryService;
-import com.dearlavion.storeengine.product.Product;
 import com.dearlavion.storeengine.product.ProductRepository;
-import com.dearlavion.storeengine.productitem.ProductItem;
+import com.dearlavion.storeengine.product.model.Product;
+import com.dearlavion.storeengine.productitem.model.ProductItem;
 import com.dearlavion.storeengine.productitem.ProductItemRepository;
 import com.dearlavion.storeengine.taxonomy.TaxonomyService;
 import com.fasterxml.jackson.databind.ObjectMapper;

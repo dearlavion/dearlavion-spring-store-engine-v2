@@ -1,5 +1,6 @@
 package com.dearlavion.storeengine.productitem;
 
+import com.dearlavion.storeengine.productitem.model.ProductItem;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.repository.MongoRepository;
 

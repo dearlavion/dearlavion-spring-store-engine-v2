@@ -1,6 +1,8 @@
 package com.dearlavion.storeengine.shippingdetails;
 
 import com.dearlavion.storeengine.security.AuthenticatedUser;
+import com.dearlavion.storeengine.shippingdetails.model.ShippingDetails;
+import com.dearlavion.storeengine.shippingdetails.request.SaveShippingDetailsRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

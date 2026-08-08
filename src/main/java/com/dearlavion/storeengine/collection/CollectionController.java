@@ -1,5 +1,8 @@
 package com.dearlavion.storeengine.collection;
 
+import com.dearlavion.storeengine.collection.model.SavedKit;
+import com.dearlavion.storeengine.collection.request.SaveKitRequest;
+import com.dearlavion.storeengine.collection.request.UpdateSavedKitRequest;
 import com.dearlavion.storeengine.security.AuthenticatedUser;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

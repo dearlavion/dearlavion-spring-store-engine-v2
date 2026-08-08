@@ -1,5 +1,9 @@
 package com.dearlavion.storeengine.survey;
 
+import com.dearlavion.storeengine.survey.model.EngineProduct;
+import com.dearlavion.storeengine.survey.model.KitAnswers;
+import com.dearlavion.storeengine.survey.model.KitPick;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;

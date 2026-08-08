@@ -1,9 +1,17 @@
 package com.dearlavion.storeengine.survey;
 
-import com.dearlavion.storeengine.product.Product;
 import com.dearlavion.storeengine.product.ProductService;
-import com.dearlavion.storeengine.productitem.ProductItem;
+import com.dearlavion.storeengine.product.model.Product;
 import com.dearlavion.storeengine.productitem.ProductItemService;
+import com.dearlavion.storeengine.productitem.model.ProductItem;
+import com.dearlavion.storeengine.survey.model.EngineProduct;
+import com.dearlavion.storeengine.survey.model.KitAnswers;
+import com.dearlavion.storeengine.survey.model.KitChecklistItem;
+import com.dearlavion.storeengine.survey.model.KitPick;
+import com.dearlavion.storeengine.survey.model.SavedSurvey;
+import com.dearlavion.storeengine.survey.model.SurveyAnswersEmbedded;
+import com.dearlavion.storeengine.survey.request.SurveyAnswersRequest;
+import com.dearlavion.storeengine.survey.response.RecommendationsResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -63,7 +71,7 @@ public class SurveyService {
         return best;
     }
 
-    public record RunEngineResult(List<KitChecklistItem> checklist, List<Product> products) {
+    private record RunEngineResult(List<KitChecklistItem> checklist, List<Product> products) {
     }
 
     /** Score the catalog, then resolve each pick to the trip-appropriate SKU (size). */
@@ -98,9 +106,6 @@ public class SurveyService {
         }).toList();
 
         return new RunEngineResult(checklist, matchedProducts);
-    }
-
-    public record RecommendationsResponse(SurveyAnswersRequest answers, List<KitChecklistItem> checklist, List<Product> products) {
     }
 
     /** The "free tool -> store suggestions" endpoint: scores the catalog against the survey

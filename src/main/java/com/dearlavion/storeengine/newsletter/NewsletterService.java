@@ -1,5 +1,6 @@
 package com.dearlavion.storeengine.newsletter;
 
+import com.dearlavion.storeengine.newsletter.model.NewsletterSubscriber;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;

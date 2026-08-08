@@ -1,5 +1,6 @@
 package com.dearlavion.storeengine.survey;
 
+import com.dearlavion.storeengine.survey.model.SavedSurvey;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;

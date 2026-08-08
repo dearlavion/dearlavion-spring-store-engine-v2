@@ -1,5 +1,6 @@
 package com.dearlavion.storeengine.productitem;
 
+import com.dearlavion.storeengine.productitem.model.ProductItemFilter;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;

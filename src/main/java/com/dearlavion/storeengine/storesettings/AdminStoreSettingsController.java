@@ -1,5 +1,7 @@
 package com.dearlavion.storeengine.storesettings;
 
+import com.dearlavion.storeengine.storesettings.request.UpdateStoreSettingsRequest;
+import com.dearlavion.storeengine.storesettings.response.StoreSettingsView;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
