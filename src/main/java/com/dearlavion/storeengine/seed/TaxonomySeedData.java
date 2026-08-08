@@ -60,9 +60,10 @@ public final class TaxonomySeedData {
             // Fixed cardinality — AdminTaxonomyController rejects add/delete on this axis; admin can
             // only rename value/subtext. `code` is the stable key the survey scoring's kit-size
             // lookup uses.
-            new Entry("duration", "Quick escape", 0, null, "2–4 days", "short"),
-            new Entry("duration", "A proper break", 1, null, "1–2 weeks", "medium"),
-            new Entry("duration", "Living it", 2, null, "3+ weeks", "long"),
+            new Entry("duration", "Day Tour", 0, null, "1 day", "day"),
+            new Entry("duration", "Quick escape", 1, null, "2–4 days", "short"),
+            new Entry("duration", "A proper break", 2, null, "1–2 weeks", "medium"),
+            new Entry("duration", "Living it", 3, null, "3+ weeks", "long"),
 
             Entry.of("gender", "Woman", 0),
             Entry.of("gender", "Man", 1),

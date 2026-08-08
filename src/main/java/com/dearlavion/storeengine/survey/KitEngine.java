@@ -25,7 +25,7 @@ public final class KitEngine {
     }
 
     // Keyed on Duration's stable `code`, not its admin-editable display label.
-    private static final Map<String, Integer> TARGET_BY_DURATION = Map.of("short", 14, "medium", 20, "long", 26);
+    private static final Map<String, Integer> TARGET_BY_DURATION = Map.of("day", 10, "short", 14, "medium", 20, "long", 26);
     private static final int MIN_KIT = 10;
     private static final int MAX_KIT = 30;
     private static final int PURE_CORE_CAP = 4; // how many generic "fits everything" items may fill the kit
