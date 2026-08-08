@@ -1,0 +1,952 @@
+[
+  {
+    "name": "Passport Wallet",
+    "category": "Documents",
+    "price": 18,
+    "currency": "USD",
+    "description": "Slim RFID-blocking travel document wallet.",
+    "icon": "📘",
+    "popular": true,
+    "tested": false,
+    "destinations": [
+      "All"
+    ],
+    "seasons": [
+      "All"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Fast-Charge Cable Set",
+    "category": "Electronics",
+    "price": 14.5,
+    "currency": "USD",
+    "description": "Durable braided cables, phone + tablet compatible.",
+    "icon": "🔌",
+    "popular": true,
+    "tested": false,
+    "destinations": [
+      "All"
+    ],
+    "seasons": [
+      "All"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Travel Medication Case",
+    "category": "Health",
+    "price": 9.99,
+    "currency": "USD",
+    "description": "Labeled daily compartments for on-the-go meds.",
+    "icon": "💊",
+    "popular": false,
+    "tested": false,
+    "destinations": [
+      "All"
+    ],
+    "seasons": [
+      "All"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Compact First-Aid Kit",
+    "category": "Health",
+    "price": 16,
+    "currency": "USD",
+    "description": "Bandages, antiseptic, and essentials in one pouch.",
+    "icon": "🩹",
+    "popular": true,
+    "tested": false,
+    "destinations": [
+      "All"
+    ],
+    "seasons": [
+      "All"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Document Organizer Wallet",
+    "category": "Documents",
+    "price": 22,
+    "currency": "USD",
+    "description": "Keeps tickets, ID, and cards in one place.",
+    "icon": "📄",
+    "popular": false,
+    "tested": false,
+    "destinations": [
+      "All"
+    ],
+    "seasons": [
+      "All"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Ripple Swimsuit",
+    "category": "Clothing",
+    "price": 34,
+    "currency": "USD",
+    "description": "Quick-dry, chlorine-resistant everyday swimsuit.",
+    "icon": "🩱",
+    "popular": true,
+    "tested": false,
+    "destinations": [
+      "Beach"
+    ],
+    "seasons": [
+      "Summer"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Quick-Dry Mini Towel",
+    "category": "Comfort",
+    "price": 12,
+    "currency": "USD",
+    "description": "Packs small, dries fast, sand won't stick.",
+    "icon": "🏖️",
+    "popular": true,
+    "tested": false,
+    "destinations": [
+      "Beach"
+    ],
+    "seasons": [
+      "Summer"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Woven Flip-Flops",
+    "category": "Clothing",
+    "price": 19.5,
+    "currency": "USD",
+    "description": "Lightweight sandals for sand and boardwalk.",
+    "icon": "🩴",
+    "popular": false,
+    "tested": false,
+    "destinations": [
+      "Beach"
+    ],
+    "seasons": [
+      "Summer"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Waterproof Phone Pouch",
+    "category": "Electronics",
+    "price": 8.5,
+    "currency": "USD",
+    "description": "Keeps your phone dry and usable in the water.",
+    "icon": "📱",
+    "popular": false,
+    "tested": false,
+    "destinations": [
+      "Beach"
+    ],
+    "seasons": [
+      "Summer"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "After-Sun Aloe Gel",
+    "category": "Toiletries",
+    "price": 11,
+    "currency": "USD",
+    "description": "Cooling relief for sun-warmed skin.",
+    "icon": "🌿",
+    "popular": false,
+    "tested": false,
+    "destinations": [
+      "Beach"
+    ],
+    "seasons": [
+      "Summer"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Trailhead Hiking Boots",
+    "category": "Clothing",
+    "price": 89,
+    "currency": "USD",
+    "description": "Ankle support and grip for uneven terrain.",
+    "icon": "🥾",
+    "popular": true,
+    "tested": false,
+    "destinations": [
+      "Mountain"
+    ],
+    "seasons": [
+      "All"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Carbon Trekking Poles",
+    "category": "Gear",
+    "price": 42,
+    "currency": "USD",
+    "description": "Collapsible poles for steep or long trails.",
+    "icon": "🥢",
+    "popular": false,
+    "tested": false,
+    "destinations": [
+      "Mountain"
+    ],
+    "seasons": [
+      "All"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Ridgeline Daypack 18L",
+    "category": "Gear",
+    "price": 38,
+    "currency": "USD",
+    "description": "Just enough room for a day on the trail.",
+    "icon": "🎒",
+    "popular": true,
+    "tested": false,
+    "destinations": [
+      "Mountain"
+    ],
+    "seasons": [
+      "All"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Insect Repellent Spray",
+    "category": "Toiletries",
+    "price": 7.5,
+    "currency": "USD",
+    "description": "DEET-free formula, travel-size.",
+    "icon": "🦟",
+    "popular": false,
+    "tested": false,
+    "destinations": [
+      "Mountain"
+    ],
+    "seasons": [
+      "All"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Rechargeable Headlamp",
+    "category": "Electronics",
+    "price": 24,
+    "currency": "USD",
+    "description": "Hands-free light for early starts or camp.",
+    "icon": "🔦",
+    "popular": false,
+    "tested": false,
+    "destinations": [
+      "Mountain"
+    ],
+    "seasons": [
+      "All"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Everyday Walking Sneakers",
+    "category": "Clothing",
+    "price": 64,
+    "currency": "USD",
+    "description": "All-day comfort for cobblestones and subways.",
+    "icon": "👟",
+    "popular": true,
+    "tested": false,
+    "destinations": [
+      "City"
+    ],
+    "seasons": [
+      "All"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Crossbody City Bag",
+    "category": "Gear",
+    "price": 36,
+    "currency": "USD",
+    "description": "Anti-theft zip, fits phone, wallet, and a map.",
+    "icon": "👜",
+    "popular": true,
+    "tested": false,
+    "destinations": [
+      "City"
+    ],
+    "seasons": [
+      "All"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Slim Power Bank 10000mAh",
+    "category": "Electronics",
+    "price": 27,
+    "currency": "USD",
+    "description": "A full charge for a long day of exploring.",
+    "icon": "🔋",
+    "popular": true,
+    "tested": false,
+    "destinations": [
+      "City"
+    ],
+    "seasons": [
+      "All"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Offline City Map Pack",
+    "category": "Electronics",
+    "price": 4.99,
+    "currency": "USD",
+    "description": "Pre-downloaded maps, no data needed.",
+    "icon": "🗺️",
+    "popular": false,
+    "tested": false,
+    "destinations": [
+      "City"
+    ],
+    "seasons": [
+      "All"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Foldable Laundry Bag",
+    "category": "Comfort",
+    "price": 9,
+    "currency": "USD",
+    "description": "Keeps worn clothes separate, packs flat.",
+    "icon": "🧺",
+    "popular": false,
+    "tested": false,
+    "destinations": [
+      "City"
+    ],
+    "seasons": [
+      "All"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "50ml Sunscreen SPF50",
+    "category": "Toiletries",
+    "price": 9.5,
+    "currency": "USD",
+    "description": "Travel-size, reef-safe, broad spectrum.",
+    "icon": "🧴",
+    "popular": true,
+    "tested": false,
+    "destinations": [
+      "All"
+    ],
+    "seasons": [
+      "Summer"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Polarized Sunglasses",
+    "category": "Accessories",
+    "price": 29,
+    "currency": "USD",
+    "description": "UV protection with a lightweight frame.",
+    "icon": "🕶️",
+    "popular": true,
+    "tested": false,
+    "destinations": [
+      "All"
+    ],
+    "seasons": [
+      "Summer"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Packable Wide-Brim Hat",
+    "category": "Accessories",
+    "price": 21,
+    "currency": "USD",
+    "description": "Folds flat, springs back into shape.",
+    "icon": "👒",
+    "popular": false,
+    "tested": false,
+    "destinations": [
+      "All"
+    ],
+    "seasons": [
+      "Summer"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Breathable Linen Set",
+    "category": "Clothing",
+    "price": 45,
+    "currency": "USD",
+    "description": "Lightweight layers for hot, humid days.",
+    "icon": "👕",
+    "popular": false,
+    "tested": false,
+    "destinations": [
+      "All"
+    ],
+    "seasons": [
+      "Summer"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Cooling Neck Towel",
+    "category": "Comfort",
+    "price": 10.5,
+    "currency": "USD",
+    "description": "Activates with water, stays cool for hours.",
+    "icon": "🧣",
+    "popular": false,
+    "tested": false,
+    "destinations": [
+      "All"
+    ],
+    "seasons": [
+      "Summer"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Thermal Base Layer Set",
+    "category": "Clothing",
+    "price": 39,
+    "currency": "USD",
+    "description": "Moisture-wicking layer for cold climates.",
+    "icon": "🥼",
+    "popular": true,
+    "tested": false,
+    "destinations": [
+      "All"
+    ],
+    "seasons": [
+      "Winter"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Insulated Touch Gloves",
+    "category": "Accessories",
+    "price": 18,
+    "currency": "USD",
+    "description": "Stay warm without taking them off for your phone.",
+    "icon": "🧤",
+    "popular": false,
+    "tested": false,
+    "destinations": [
+      "All"
+    ],
+    "seasons": [
+      "Winter"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Ribbed Wool Beanie",
+    "category": "Accessories",
+    "price": 15,
+    "currency": "USD",
+    "description": "Soft merino wool, packs into a pocket.",
+    "icon": "🧢",
+    "popular": false,
+    "tested": false,
+    "destinations": [
+      "All"
+    ],
+    "seasons": [
+      "Winter"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Lip & Skin Balm Duo",
+    "category": "Toiletries",
+    "price": 8,
+    "currency": "USD",
+    "description": "Protects against wind and dry cabin air.",
+    "icon": "💄",
+    "popular": false,
+    "tested": false,
+    "destinations": [
+      "All"
+    ],
+    "seasons": [
+      "Winter"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Merino Wool Socks (2pk)",
+    "category": "Clothing",
+    "price": 16.5,
+    "currency": "USD",
+    "description": "Warm, odor-resistant, all-day comfort.",
+    "icon": "🧦",
+    "popular": true,
+    "tested": false,
+    "destinations": [
+      "All"
+    ],
+    "seasons": [
+      "Winter"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Packable Rain Jacket",
+    "category": "Clothing",
+    "price": 48,
+    "currency": "USD",
+    "description": "Waterproof shell that folds into its own pocket.",
+    "icon": "🧥",
+    "popular": true,
+    "tested": false,
+    "destinations": [
+      "All"
+    ],
+    "seasons": [
+      "Rainy"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Compact Travel Umbrella",
+    "category": "Gear",
+    "price": 14,
+    "currency": "USD",
+    "description": "Windproof frame, fits in a daypack pocket.",
+    "icon": "☂️",
+    "popular": true,
+    "tested": false,
+    "destinations": [
+      "All"
+    ],
+    "seasons": [
+      "Rainy"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Waterproof Shoe Covers",
+    "category": "Gear",
+    "price": 11,
+    "currency": "USD",
+    "description": "Slip over any shoe to keep feet dry.",
+    "icon": "👢",
+    "popular": false,
+    "tested": false,
+    "destinations": [
+      "All"
+    ],
+    "seasons": [
+      "Rainy"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Electronics Dry Bag",
+    "category": "Electronics",
+    "price": 13.5,
+    "currency": "USD",
+    "description": "Roll-top seal keeps devices safe from rain.",
+    "icon": "💧",
+    "popular": false,
+    "tested": false,
+    "destinations": [
+      "All"
+    ],
+    "seasons": [
+      "Rainy"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Quick-Dry Travel Set",
+    "category": "Clothing",
+    "price": 32,
+    "currency": "USD",
+    "description": "Dries overnight even in humid conditions.",
+    "icon": "👚",
+    "popular": false,
+    "tested": false,
+    "destinations": [
+      "All"
+    ],
+    "seasons": [
+      "Rainy"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Personal Safety Whistle",
+    "category": "Gear",
+    "price": 6,
+    "currency": "USD",
+    "description": "Lightweight, loud, and easy to clip on.",
+    "icon": "🔔",
+    "popular": false,
+    "tested": false,
+    "destinations": [
+      "All"
+    ],
+    "seasons": [
+      "All"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Portable Door Alarm",
+    "category": "Gear",
+    "price": 17,
+    "currency": "USD",
+    "description": "Extra peace of mind for solo stays.",
+    "icon": "🚪",
+    "popular": false,
+    "tested": false,
+    "destinations": [
+      "All"
+    ],
+    "seasons": [
+      "All"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Travel eSIM Card",
+    "category": "Electronics",
+    "price": 19.99,
+    "currency": "USD",
+    "description": "Stay connected the moment you land.",
+    "icon": "📶",
+    "popular": true,
+    "tested": false,
+    "destinations": [
+      "All"
+    ],
+    "seasons": [
+      "All"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Group First-Aid Kit (Large)",
+    "category": "Health",
+    "price": 28,
+    "currency": "USD",
+    "description": "Sized for 4-6 travelers, restockable.",
+    "icon": "🧰",
+    "popular": false,
+    "tested": false,
+    "destinations": [
+      "All"
+    ],
+    "seasons": [
+      "All"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Printed Itinerary Set",
+    "category": "Documents",
+    "price": 5,
+    "currency": "USD",
+    "description": "Shareable printed copies for the whole group.",
+    "icon": "🗒️",
+    "popular": false,
+    "tested": false,
+    "destinations": [
+      "All"
+    ],
+    "seasons": [
+      "All"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Multi-Port Charging Hub",
+    "category": "Electronics",
+    "price": 33,
+    "currency": "USD",
+    "description": "Charge up to 6 devices from one outlet.",
+    "icon": "🔌",
+    "popular": true,
+    "tested": false,
+    "destinations": [
+      "All"
+    ],
+    "seasons": [
+      "All"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Travel-Size Toiletry Kit",
+    "category": "Toiletries",
+    "price": 15,
+    "currency": "USD",
+    "description": "TSA-friendly bottles, refillable and reusable.",
+    "icon": "🧴",
+    "popular": true,
+    "tested": false,
+    "destinations": [
+      "All"
+    ],
+    "seasons": [
+      "All"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Versatile Spare Outfit",
+    "category": "Clothing",
+    "price": 26,
+    "currency": "USD",
+    "description": "One extra outfit that pairs with everything.",
+    "icon": "👕",
+    "popular": false,
+    "tested": false,
+    "destinations": [
+      "All"
+    ],
+    "seasons": [
+      "All"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Laundry Detergent Sheets",
+    "category": "Toiletries",
+    "price": 7,
+    "currency": "USD",
+    "description": "Featherlight sheets, no liquid spills.",
+    "icon": "🧼",
+    "popular": false,
+    "tested": false,
+    "destinations": [
+      "All"
+    ],
+    "seasons": [
+      "All"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Packing Cubes (Set of 3)",
+    "category": "Gear",
+    "price": 24,
+    "currency": "USD",
+    "description": "Compress and organize by outfit or category.",
+    "icon": "🧳",
+    "popular": true,
+    "tested": false,
+    "destinations": [
+      "All"
+    ],
+    "seasons": [
+      "All"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Universal Travel Adapter",
+    "category": "Electronics",
+    "price": 21,
+    "currency": "USD",
+    "description": "Works in 150+ countries, built-in USB ports.",
+    "icon": "🔋",
+    "popular": true,
+    "tested": false,
+    "destinations": [
+      "All"
+    ],
+    "seasons": [
+      "All"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Reusable Laundry Bag",
+    "category": "Comfort",
+    "price": 8.5,
+    "currency": "USD",
+    "description": "Mesh bag for longer stays between washes.",
+    "icon": "🧺",
+    "popular": false,
+    "tested": false,
+    "destinations": [
+      "All"
+    ],
+    "seasons": [
+      "All"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Extended Medication Organizer",
+    "category": "Health",
+    "price": 12.5,
+    "currency": "USD",
+    "description": "A full month of daily compartments.",
+    "icon": "💊",
+    "popular": false,
+    "tested": false,
+    "destinations": [
+      "All"
+    ],
+    "seasons": [
+      "All"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Packing Cubes (Full Set)",
+    "category": "Gear",
+    "price": 34,
+    "currency": "USD",
+    "description": "Complete system for extended travel.",
+    "icon": "🧳",
+    "popular": false,
+    "tested": false,
+    "destinations": [
+      "All"
+    ],
+    "seasons": [
+      "All"
+    ],
+    "parties": [
+      "All"
+    ]
+  },
+  {
+    "name": "Foldable Spare Duffel",
+    "category": "Gear",
+    "price": 19,
+    "currency": "USD",
+    "description": "Packs flat, unfolds for souvenirs on the way home.",
+    "icon": "🎒",
+    "popular": true,
+    "tested": false,
+    "destinations": [
+      "All"
+    ],
+    "seasons": [
+      "All"
+    ],
+    "parties": [
+      "All"
+    ]
+  }
+]
