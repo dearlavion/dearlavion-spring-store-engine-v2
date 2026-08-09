@@ -5,7 +5,6 @@ import com.dearlavion.storeengine.product.ProductRepository;
 import com.dearlavion.storeengine.product.model.Product;
 import com.dearlavion.storeengine.productitem.model.ProductItem;
 import com.dearlavion.storeengine.productitem.ProductItemRepository;
-import com.dearlavion.storeengine.taxonomy.TaxonomyService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,10 +18,12 @@ import java.util.List;
 
 /**
  * Direct port of dearlavion-store-engine's src/seed/seed.ts: idempotently upserts the 8
- * categories, 8 taxonomy axes ({@link TaxonomySeedData}), and the 50-product mock catalog (plus a
- * default ProductItem per product) from the same seed/categories.json and seed/seed-data.json
- * bundled as classpath resources. Only runs under the "seed" Spring profile — never on a normal
- * boot — so this never touches the shared production database by accident:
+ * categories and the 50-product mock catalog (plus a default ProductItem per product) from the
+ * same seed/categories.json and seed/seed-data.json bundled as classpath resources. Reference/
+ * taxonomy data (destination, season, etc.) is seeded separately by
+ * dearlavion-spring-master-data-service's own SeedRunner — this service no longer owns that data
+ * (see ReferenceDataSeed.java in that repo). Only runs under the "seed" Spring profile — never on
+ * a normal boot — so this never touches the shared production database by accident:
  * {@code mvn spring-boot:run -Dspring-boot.run.profiles=seed}.
  */
 @Slf4j
@@ -32,7 +33,6 @@ import java.util.List;
 public class SeedRunner implements CommandLineRunner {
 
     private final CategoryService categoryService;
-    private final TaxonomyService taxonomyService;
     private final ProductRepository productRepository;
     private final ProductItemRepository productItemRepository;
     private final ObjectMapper objectMapper;
@@ -44,10 +44,6 @@ public class SeedRunner implements CommandLineRunner {
                 });
         for (String name : categories) {
             categoryService.upsert(name);
-        }
-
-        for (TaxonomySeedData.Entry entry : TaxonomySeedData.ENTRIES) {
-            taxonomyService.upsert(entry.axis(), entry.value(), entry.order(), entry.emoji(), entry.subtext(), entry.code());
         }
 
         List<SeedProductEntry> products = objectMapper.readValue(
@@ -100,8 +96,8 @@ public class SeedRunner implements CommandLineRunner {
             }
         }
 
-        log.info("Seeded {} categories, {} taxonomy values, {} products ({} new default product items).",
-                categories.size(), TaxonomySeedData.ENTRIES.size(), productUpserts, itemInserts);
+        log.info("Seeded {} categories, {} products ({} new default product items).",
+                categories.size(), productUpserts, itemInserts);
     }
 
     /** Stable, varied stock (0-59) derived from the slug — same hash as seed.ts's
