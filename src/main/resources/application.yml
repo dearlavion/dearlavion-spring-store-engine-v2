@@ -18,6 +18,13 @@ spring:
       auto-index-creation: false
   main:
     allow-circular-references: true
+  servlet:
+    # Spring's 1MB default would reject admin/media/drive/upload's multipart body (an image
+    # forwarded to media-service, which enforces the real size cap) well below anything
+    # media.max-image-size-kb would realistically be set to.
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
   jackson:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false

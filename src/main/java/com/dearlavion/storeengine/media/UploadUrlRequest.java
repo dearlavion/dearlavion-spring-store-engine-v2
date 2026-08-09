@@ -4,6 +4,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 
+// Requests a presigned MinIO/S3 upload URL. Google Drive uploads go through a separate multipart
+// broker endpoint (AdminMediaController#uploadToDrive) instead — see MediaClient's javadoc for why.
 public record UploadUrlRequest(
         @NotBlank String fileName,
 
@@ -21,10 +23,6 @@ public record UploadUrlRequest(
         // validation on its side (only a trailing slash gets stripped) — this allowlist is what
         // actually prevents a caller from injecting something like "../../".
         @Pattern(regexp = "products|popular-kits")
-        String folder,
-
-        // "s3" (default, presigned MinIO PUT) or "drive" (Google Drive resumable upload session).
-        @Pattern(regexp = "s3|drive")
-        String provider
+        String folder
 ) {
 }
