@@ -1,4 +1,9 @@
 spring:
+  config:
+    # Loads MONGODB_URI (and any other secrets) from a gitignored .env in the project root, so the
+    # Atlas connection string never has to be passed as a plaintext env var/CLI arg (visible via
+    # `ps`) or committed to this file.
+    import: optional:file:.env[.properties]
   data:
     mongodb:
       # Separate dev DB during Phases 1-3 (not the shared prod-ish DB the live NestJS
@@ -31,6 +36,8 @@ app:
   notification-service-url: ${NOTIFICATION_SERVICE_URL:http://localhost:8083}
   # Must match notification-service's own INTERNAL_API_KEY (defaults match for local dev).
   internal-api-key: ${INTERNAL_API_KEY:travelbesty-internal-dev-key}
+  # dearlavion-spring-media-service — presigned-upload-URL broker for admin product/kit photos.
+  media-service-url: ${MEDIA_SERVICE_URL:http://localhost:8085}
 
 springdoc:
   api-docs:
