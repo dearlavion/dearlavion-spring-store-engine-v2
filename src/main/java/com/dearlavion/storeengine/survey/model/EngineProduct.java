@@ -12,6 +12,8 @@ public record EngineProduct(
         List<String> parties,
         List<String> activities,
         List<String> transportModes,
+        List<String> durations,
+        List<String> genders,
         String kitCategory,
         boolean popular,
         boolean tested

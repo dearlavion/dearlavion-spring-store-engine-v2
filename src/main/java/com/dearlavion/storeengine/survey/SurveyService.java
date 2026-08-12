@@ -43,6 +43,8 @@ public class SurveyService {
                 p.getParties() != null ? p.getParties() : List.of(),
                 p.getActivities() != null ? p.getActivities() : List.of(),
                 p.getTransportModes() != null ? p.getTransportModes() : List.of(),
+                p.getDurations() != null ? p.getDurations() : List.of(),
+                p.getGenders() != null ? p.getGenders() : List.of(),
                 p.getKitCategory(),
                 p.isPopular(),
                 p.isTested()
@@ -80,7 +82,7 @@ public class SurveyService {
         KitAnswers kitAnswers = new KitAnswers(
                 answers.destinations() != null ? answers.destinations() : List.of(),
                 answers.season(), answers.party(), answers.partySize(), answers.duration(),
-                answers.activities(), answers.transportation(), answers.priorityCategories()
+                answers.activities(), answers.transportation(), answers.gender(), answers.priorityCategories()
         );
         List<EngineProduct> engineProducts = active.stream().map(SurveyService::toEngineProduct).toList();
         List<KitPick> picks = KitEngine.buildKit(kitAnswers, engineProducts);

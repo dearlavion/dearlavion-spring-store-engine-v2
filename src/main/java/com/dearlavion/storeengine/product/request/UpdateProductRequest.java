@@ -14,6 +14,8 @@ public record UpdateProductRequest(
         List<String> parties,
         List<String> activities,
         List<String> transportModes,
+        List<String> durations,
+        List<String> genders,
         String kitCategory,
         Boolean active,
         List<String> linkedProductIds

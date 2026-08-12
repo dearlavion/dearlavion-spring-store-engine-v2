@@ -14,6 +14,8 @@ public record KitAnswers(
         String duration,
         List<String> activities,
         String transportation,
+        // Display value, not a code — Gender has no stable code, same as season/party.
+        String gender,
         List<String> priorityCategories
 ) {
 }

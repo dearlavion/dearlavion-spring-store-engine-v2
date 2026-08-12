@@ -22,6 +22,7 @@ public record SurveyAnswersRequest(
         @NotBlank @Pattern(regexp = "day|short|medium|long") String duration,
         List<String> activities,
         String transportation,
+        String gender,
         List<String> priorityCategories
 ) {
 }

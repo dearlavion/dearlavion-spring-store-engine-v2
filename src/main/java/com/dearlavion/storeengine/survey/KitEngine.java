@@ -35,6 +35,10 @@ public final class KitEngine {
     private static final double AXIS_MISMATCH = Double.NEGATIVE_INFINITY; // tagged only for other values — excluded
     private static final double ACTIVITY_WEIGHT = 3; // per overlapping activity — the strongest differentiator
     private static final double TRANSPORT_WEIGHT = 1.5; // soft boost, not exclusionary
+    // Duration and gender are soft boosts too — an untagged product suits any trip length/anyone,
+    // so tagging can only ever help a product, never hide it from a kit.
+    private static final double DURATION_WEIGHT = 1.5;
+    private static final double GENDER_WEIGHT = 1.5;
     // Matches kit-recommendation.ts's mock-mode weight — kitCategory is "weighted heaviest".
     private static final double KIT_CATEGORY_WEIGHT = 5;
 
@@ -68,6 +72,18 @@ public final class KitEngine {
     private static double transportBoost(EngineProduct product, String answer) {
         if (answer == null || answer.isBlank() || product.transportModes().isEmpty()) return 0;
         return product.transportModes().contains(answer) ? TRANSPORT_WEIGHT : 0;
+    }
+
+    /** Soft boost — compares Duration's stable `code`, which is what KitAnswers carries. */
+    private static double durationBoost(EngineProduct product, String answer) {
+        if (answer == null || answer.isBlank() || product.durations().isEmpty()) return 0;
+        return product.durations().contains(answer) ? DURATION_WEIGHT : 0;
+    }
+
+    /** Soft boost — gender is a display value, not a code (Gender has no stable code). */
+    private static double genderBoost(EngineProduct product, String answer) {
+        if (answer == null || answer.isBlank() || product.genders().isEmpty()) return 0;
+        return product.genders().contains(answer) ? GENDER_WEIGHT : 0;
     }
 
     private static double kitCategoryBoost(EngineProduct product, List<String> selected) {
@@ -111,12 +127,15 @@ public final class KitEngine {
         double boost = interactionBoost(product, a);
         double transport = transportBoost(product, a.transportation());
         double kitCat = kitCategoryBoost(product, a.priorityCategories());
-        double total = d + s + p + overlap * ACTIVITY_WEIGHT + boost + transport + kitCat;
+        double duration = durationBoost(product, a.duration());
+        double gender = genderBoost(product, a.gender());
+        double total = d + s + p + overlap * ACTIVITY_WEIGHT + boost + transport + kitCat + duration + gender;
         if (product.popular()) total += 0.8;
         if (product.tested()) total += 0.5;
 
         boolean pureCore = d == AXIS_ALL && s == AXIS_ALL && p == AXIS_ALL
-                && overlap == 0 && boost == 0 && transport == 0 && kitCat == 0;
+                && overlap == 0 && boost == 0 && transport == 0 && kitCat == 0
+                && duration == 0 && gender == 0;
         return new Scored(product, total, pureCore);
     }
 

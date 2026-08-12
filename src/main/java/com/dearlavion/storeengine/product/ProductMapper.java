@@ -26,6 +26,8 @@ public class ProductMapper {
         product.setParties(dto.parties() != null ? dto.parties() : List.of("All"));
         product.setActivities(dto.activities() != null ? dto.activities() : List.of());
         product.setTransportModes(dto.transportModes() != null ? dto.transportModes() : List.of());
+        product.setDurations(dto.durations() != null ? dto.durations() : List.of());
+        product.setGenders(dto.genders() != null ? dto.genders() : List.of());
         product.setKitCategory(dto.kitCategory());
         product.setActive(true);
         product.setLinkedProductIds(dto.linkedProductIds() != null ? dto.linkedProductIds() : List.of());
@@ -49,6 +51,8 @@ public class ProductMapper {
         if (dto.parties() != null) product.setParties(dto.parties());
         if (dto.activities() != null) product.setActivities(dto.activities());
         if (dto.transportModes() != null) product.setTransportModes(dto.transportModes());
+        if (dto.durations() != null) product.setDurations(dto.durations());
+        if (dto.genders() != null) product.setGenders(dto.genders());
         if (dto.kitCategory() != null) product.setKitCategory(dto.kitCategory());
         if (dto.active() != null) product.setActive(dto.active());
         if (dto.linkedProductIds() != null) product.setLinkedProductIds(dto.linkedProductIds());

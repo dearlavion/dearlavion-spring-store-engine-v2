@@ -20,6 +20,8 @@ public record CreateProductRequest(
         List<String> parties,
         List<String> activities,
         List<String> transportModes,
+        List<String> durations,
+        List<String> genders,
         String kitCategory,
         List<String> linkedProductIds
 ) {

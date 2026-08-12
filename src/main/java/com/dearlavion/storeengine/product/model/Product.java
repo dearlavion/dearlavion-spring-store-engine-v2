@@ -51,6 +51,14 @@ public class Product {
 
     private List<String> transportModes = new ArrayList<>();
 
+    /** Trip lengths this product suits, as Duration's stable `code` ('day'|'short'|'medium'|'long')
+     * rather than the admin-editable display label — same reason KitEngine keys its size lookup on
+     * the code. Empty = suits any length; soft boost only, never exclusionary. */
+    private List<String> durations = new ArrayList<>();
+
+    /** Who this product is for, as Gender's display value. Empty = suits anyone; soft boost only. */
+    private List<String> genders = new ArrayList<>();
+
     /** The single packing-list bucket this product belongs to — powers the survey's "what matters
      * most to you" question. Not required at the schema level — enforcing it would break saving
      * any other field on every product that predates this field. The admin form is the real
