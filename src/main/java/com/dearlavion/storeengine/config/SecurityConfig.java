@@ -60,6 +60,7 @@ public class SecurityConfig {
                                 "/popular-kits", "/popular-kits/**",
                                 "/exchange-rates", "/exchange-rates/**",
                                 "/store-settings", "/store-settings/**",
+                                "/kit-settings",
                                 "/stats/top-selling"
                         ).permitAll()
                         .requestMatchers(HttpMethod.POST, "/survey/recommendations", "/newsletter/subscribe").permitAll()
