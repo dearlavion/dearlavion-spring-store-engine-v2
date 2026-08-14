@@ -9,7 +9,10 @@ spring:
       # Separate dev DB during Phases 1-3 (not the shared prod-ish DB the live NestJS
       # service uses) — deliberately avoids polluting real data with iterative test writes.
       # Point at the shared DB only for the Phase 4 parity diff, right before cutover.
-      uri: ${MONGODB_URI:mongodb://localhost:27017/dearlavion-spring-store-engine-v2-dev}
+      # No localhost fallback: every environment, dev included, runs against the Atlas cluster.
+      # MONGODB_URI comes from the gitignored .env above (or the environment) and is required —
+      # startup fails loudly rather than silently writing to a local Mongo nobody else can see.
+      uri: ${MONGODB_URI}
       # Indexes already exist on the shared DB (created by the original NestJS/Mongoose service),
       # often under different auto-generated names for the same key pattern (e.g. Mongoose's
       # "userId_1" vs Spring Data's default "userId") — auto-creation on startup would either
