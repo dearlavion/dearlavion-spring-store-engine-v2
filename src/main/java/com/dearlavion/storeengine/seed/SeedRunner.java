@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
@@ -29,6 +30,11 @@ import java.util.List;
 @Slf4j
 @Component
 @Profile("seed")
+// Second, explicit switch on top of the profile: seeding overwrites live catalog/categories,
+// so it must never fire from a stray `-Dspring-boot.run.profiles=seed` alone. Both the
+// profile AND app.seed-enabled=true are required. Disabled, not deleted — re-enable with
+// APP_SEED_ENABLED=true when seeding a genuinely empty environment.
+@ConditionalOnProperty(name = "app.seed-enabled", havingValue = "true")
 @RequiredArgsConstructor
 public class SeedRunner implements CommandLineRunner {
 
