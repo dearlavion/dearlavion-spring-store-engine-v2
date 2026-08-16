@@ -39,8 +39,22 @@ public final class KitEngine {
     // so tagging can only ever help a product, never hide it from a kit.
     private static final double DURATION_WEIGHT = 1.5;
     private static final double GENDER_WEIGHT = 1.5;
-    // Matches kit-recommendation.ts's mock-mode weight — kitCategory is "weighted heaviest".
-    private static final double KIT_CATEGORY_WEIGHT = 5;
+    // Kit category is the heaviest signal — it's the one question asked purely to rank. Graded so
+    // covering more of what the shopper asked for beats scraping in on one bucket, but with
+    // diminishing returns and a hard cap, so a product tagged into every kit can't win on breadth
+    // of tagging alone. 1 match = 5, 2 = 6.5, 3+ = 8.
+    private static final double KIT_CATEGORY_WEIGHT = 5;      // first matching kit
+    private static final double KIT_CATEGORY_EXTRA = 1.5;     // each further matching kit
+    private static final double KIT_CATEGORY_CAP = 8;         // reached at 3 matches
+    /**
+     * The basics everyone packs, so it only counts as a preference when the shopper picked it
+     * <em>alongside</em> something else — a considered "and the basics too" rather than a lazy sole
+     * answer. On its own it scores nothing: it's the broadest bucket, so handing the engine's
+     * largest boost to a large share of the catalog on a single pick would flatten the ranking
+     * outright, leaving nothing to order the kit by. Those items still reach a kit through the
+     * capped generic pool in buildKit (see PURE_CORE_CAP).
+     */
+    private static final String BASELINE_KIT_CATEGORY = "Essentials Kit";
 
     private static final Pattern LONG_TRIP_PATTERN = Pattern.compile("laundry|packing|cube|organizer|detergent|duffel");
     private static final Pattern GROUP_PATTERN = Pattern.compile("group|shared|large|hub|multi|family");
@@ -86,11 +100,18 @@ public final class KitEngine {
         return product.genders().contains(answer) ? GENDER_WEIGHT : 0;
     }
 
-    /** Awarded once for any overlap, not per match — a product tagged with many buckets shouldn't
-     * outscore a well-matched one simply by covering more of them. */
+    /** See the weight constants above for the grading rule and BASELINE_KIT_CATEGORY for its
+     * one exception. */
     private static double kitCategoryBoost(EngineProduct product, List<String> selected) {
         if (selected == null || selected.isEmpty() || product.kitCategories().isEmpty()) return 0;
-        return product.kitCategories().stream().anyMatch(selected::contains) ? KIT_CATEGORY_WEIGHT : 0;
+        // Drop the baseline from the shopper's picks when it's all they chose; it counts normally
+        // as soon as they paired it with a real preference.
+        List<String> effective = selected.size() > 1
+                ? selected
+                : selected.stream().filter(c -> !BASELINE_KIT_CATEGORY.equals(c)).toList();
+        long matches = product.kitCategories().stream().filter(effective::contains).count();
+        if (matches == 0) return 0;
+        return Math.min(KIT_CATEGORY_WEIGHT + (matches - 1) * KIT_CATEGORY_EXTRA, KIT_CATEGORY_CAP);
     }
 
     private static int effectivePartySize(KitAnswers a) {

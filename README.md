@@ -50,8 +50,8 @@ the port — see "Verification" below).
 
 ## Data model
 
-Same collections as v1: `products`, `product_items`, `categories`, `kit_builder_settings`,
-`kit_builder_axis_order`, `carts`, `saved_surveys`, `orders`, `shipping_details`, `popular_kits`,
+Same collections as v1 (minus `kit_builder_settings` and `kit_builder_axis_order`, dropped as
+unused): `products`, `product_items`, `categories`, `carts`, `saved_surveys`, `orders`, `shipping_details`, `popular_kits`,
 `store_settings` (two singleton docs: `free_shipping_minimum` and `exchange_rate`), `user_profiles`,
 `newsletter_subscribers`, `saved_kits`. `Product` and `SavedKit` use a slugified-name string `_id`
 (not an auto-generated ObjectId), matching v1.
@@ -59,6 +59,91 @@ Same collections as v1: `products`, `product_items`, `categories`, `kit_builder_
 The product-item public listing (`GET /product-items`) runs the same `$lookup`/`$facet` discount
 computation as v1, ported as literal BSON aggregation stages rather than re-derived with Spring
 Data's fluent DSL, specifically to avoid behavioral drift.
+
+## How the kit engine scores (KitEngine)
+
+Deterministic and hand-checkable: no randomness, no catalog-dependent weights. The same answers
+against the same catalog always produce the same kit, and you can work out any product's score with
+the table below.
+
+### Step 1 — hard filters (in or out)
+
+Destination, season and party are tri-state. A product tagged for *other* values is **excluded
+outright**, not merely down-ranked — a swimsuit has no place in a winter mountain kit.
+
+| Product's tags on that axis | Result |
+| --- | --- |
+| contains the shopper's answer | +2 (`AXIS_MATCH`) |
+| empty, or contains `All` | +0.5 (`AXIS_ALL`) — eligible but dampened |
+| tagged, but not with this answer | **excluded** |
+
+### Step 2 — soft boosts (ranking only, never exclude)
+
+An untagged product suits everything, so tagging can only ever lift a product.
+
+| Signal | Weight |
+| --- | --- |
+| Activities | **+3 per overlapping activity** (uncapped — the strongest differentiator) |
+| Kit categories | **+5** first match, **+1.5** each further match, **capped at +8** (so 1 = 5, 2 = 6.5, 3+ = 8) |
+| Transportation | +1.5 if the product lists the answer |
+| Trip length | +1.5 (matched on Duration's stable `code`, not its label) |
+| Gender | +1.5 |
+| Popular | +0.8 |
+| Field-tested | +0.5 |
+| Interaction nudges | +1 to +1.5 — long trip × laundry/packing items, group × shared/family items, beach + rainy × dry/waterproof items |
+
+**`Essentials Kit` counts only when it isn't the only pick.** It's the basics everyone packs, so
+selecting it *alongside* another kit is a considered "and the basics too" and scores normally.
+Selecting it *alone* scores nothing: it's the broadest bucket, and handing the largest boost to a
+large share of the catalog on one pick flattens the ranking, leaving nothing to order the kit by.
+Either way those items still reach kits through the capped generic pool in step 3.
+
+| Shopper picks | Effect on a product tagged `Essentials Kit` |
+| --- | --- |
+| `[Essentials Kit]` | nothing — baseline ignored |
+| `[Essentials Kit, Weather Kit]` | +5 (one match) |
+| `[Essentials Kit, Weather Kit]` on a product tagged both | +6.5 (two matches) |
+
+### Step 3 — selection
+
+Kit size comes from trip length (`day` 10, `short` 14, `medium` 20, `long` 26), widened for larger
+parties, clamped to 10–30. Slots fill in three passes:
+
+1. **Generic** — the top *fits-everything* items, capped at **4** (`PURE_CORE_CAP`) so they can't
+   define the kit. A product is "generic" only if it earned nothing in step 2 at all.
+2. **Breadth** — the best remaining item of each **product category** (Clothing, Electronics, …),
+   so the kit spans the trip rather than stacking one type.
+3. **Depth** — highest scores first, until the kit is full.
+
+### Worked example
+
+**Rain Jacket** — category *Clothing*; kit categories *Weather Kit, Activity Gear Kit*; activities
+*Hiking, Sightseeing*; seasons *Rainy*; destinations *Mountain, City*.
+
+Shopper answers: destination *Mountain*, season *Rainy*, party *Solo*, activities *[Hiking]*,
+transport *Car*, kits *[Weather Kit, Essentials Kit]*.
+
+```
+destination  Mountain is tagged                     +2.0
+season       Rainy is tagged                        +2.0
+party        untagged -> neutral                    +0.5
+activities   Hiking overlaps (1 x 3)                +3.0
+kit category Weather Kit matches; the jacket
+             isn't tagged Essentials -> 1 match     +5.0
+transport    Car not listed                          0.0
+popular/tested (say both)                           +1.3
+                                                   ------
+                                                    13.8
+```
+
+Add *Activity Gear Kit* to the shopper's picks and the kit-category term becomes 6.5 (two matches),
+not 10 — that's the diminishing return. Essentials Kit is in this shopper's picks and does count
+here (it isn't their only choice), but the Rain Jacket isn't tagged with it, so it earns nothing
+from it. Had the shopper picked *only* Essentials Kit, every product would score 0 on this axis and
+the kit would be decided by destination, season and activities alone.
+
+> `kit-recommendation.ts` in the frontend mirrors this exactly for mock mode. The two must be
+> changed together, or mock and real mode will rank differently.
 
 ## Known, intentional deviation from v1
 
