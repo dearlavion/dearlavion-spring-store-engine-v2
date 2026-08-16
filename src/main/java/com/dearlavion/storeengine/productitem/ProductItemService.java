@@ -85,4 +85,19 @@ public class ProductItemService {
         item.setUpdatedAt(Instant.now());
         repository.save(item);
     }
+
+    /**
+     * Deactivates every item under a product — called when the product itself is deleted, so its
+     * SKUs don't stay purchasable behind a product nobody can reach. Soft, like every other delete
+     * here: historical carts and orders keep resolving their items.
+     *
+     * @return how many were deactivated
+     */
+    public int deactivateForProduct(String productId) {
+        List<ProductItem> items = repository.findByProductIdAndActiveTrue(productId, Sort.unsorted());
+        Instant now = Instant.now();
+        items.forEach(i -> { i.setActive(false); i.setUpdatedAt(now); });
+        repository.saveAll(items);
+        return items.size();
+    }
 }
