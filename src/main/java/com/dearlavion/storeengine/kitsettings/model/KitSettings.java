@@ -23,7 +23,12 @@ import java.util.Map;
 @Document(collection = "kit_settings")
 public class KitSettings {
 
-    public static final String SINGLETON_ID = "kit_settings";
+    /** The survey's questions: what /travel asks, in what order, and how each is answered. */
+    public static final String SURVEY_ID = "survey_kit_settings";
+    /** The admin product form's fields: which collections a product can be tagged with. */
+    public static final String PRODUCT_ID = "product_kit_settings";
+    /** Pre-split document, kept for one release as the rollback path — see KitSettingsMigration. */
+    public static final String LEGACY_ID = "kit_settings";
 
     public static final List<String> DEFAULT_ORDER = List.of(
             "destination", "season", "duration", "party", "transportation", "activity", "kitCategory", "gender"
@@ -33,6 +38,29 @@ public class KitSettings {
      * Mirrors how the survey behaves today, so defaulting changes nothing until an admin edits it:
      * destination/activity/kitCategory take several answers, and activity/gender may be skipped.
      */
+    /**
+     * The product form's own defaults. Deliberately NOT the survey's: a shopper picks one trip
+     * length and one gender, but a product suits several of each (`durations`/`genders` are
+     * arrays), so copying the survey's shape renders those fields single-select and silently
+     * discards the admin's earlier pick.
+     */
+    public static final List<String> DEFAULT_PRODUCT_ORDER = List.of(
+            "productCategory", "kitCategory", "destination", "season",
+            "duration", "party", "transportation", "activity", "gender"
+    );
+
+    public static Map<String, SectionSettings> defaultProductSections() {
+        Map<String, SectionSettings> defaults = new LinkedHashMap<>();
+        // Both required: save() rejects a product without them.
+        defaults.put("productCategory", new SectionSettings(true, false));
+        defaults.put("kitCategory", new SectionSettings(true, true));
+        // Every other axis is a multi-value tag on the product, and empty means "suits all".
+        for (String key : List.of("destination", "season", "duration", "party", "transportation", "activity", "gender")) {
+            defaults.put(key, new SectionSettings(false, true));
+        }
+        return defaults;
+    }
+
     public static Map<String, SectionSettings> defaultSections() {
         Map<String, SectionSettings> defaults = new LinkedHashMap<>();
         defaults.put("destination", new SectionSettings(true, true));
@@ -47,7 +75,7 @@ public class KitSettings {
     }
 
     @Id
-    private String id = SINGLETON_ID;
+    private String id = SURVEY_ID;
 
     private List<String> order = DEFAULT_ORDER;
 

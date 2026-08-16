@@ -28,12 +28,35 @@ public class KitSettingsService {
 
     private final KitSettingsRepository repository;
 
-    public KitSettings get() {
-        return repository.findById(KitSettings.SINGLETON_ID).orElseGet(KitSettings::new);
+    /** The survey's settings — what /travel asks. */
+    public KitSettings survey() {
+        return get(KitSettings.SURVEY_ID);
     }
 
-    public KitSettings update(UpdateKitSettingsRequest patch) {
-        KitSettings settings = get();
+    /** The admin product form's settings — which collections a product can be tagged with. */
+    public KitSettings productForm() {
+        return get(KitSettings.PRODUCT_ID);
+    }
+
+    /**
+     * A missing document yields defaults rather than an error, which keeps a fresh environment
+     * working — but also means a half-applied migration reverts silently, so KitSettingsMigration
+     * seeds both documents on startup rather than relying on this.
+     */
+    public KitSettings get(String id) {
+        return repository.findById(id).orElseGet(() -> {
+            KitSettings fresh = new KitSettings();
+            fresh.setId(id);
+            if (KitSettings.PRODUCT_ID.equals(id)) {
+                fresh.setOrder(KitSettings.DEFAULT_PRODUCT_ORDER);
+                fresh.setSections(KitSettings.defaultProductSections());
+            }
+            return fresh;
+        });
+    }
+
+    public KitSettings update(String id, UpdateKitSettingsRequest patch) {
+        KitSettings settings = get(id);
 
         if (patch.order() != null) {
             for (String key : patch.order()) {
@@ -57,7 +80,7 @@ public class KitSettingsService {
             settings.setSections(merged);
         }
 
-        settings.setId(KitSettings.SINGLETON_ID);
+        settings.setId(id);
         return repository.save(settings);
     }
 }
