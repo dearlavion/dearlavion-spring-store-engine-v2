@@ -59,11 +59,12 @@ public class Product {
     /** Who this product is for, as Gender's display value. Empty = suits anyone; soft boost only. */
     private List<String> genders = new ArrayList<>();
 
-    /** The single packing-list bucket this product belongs to — powers the survey's "what matters
-     * most to you" question. Not required at the schema level — enforcing it would break saving
-     * any other field on every product that predates this field. The admin form is the real
-     * enforcement point. */
-    private String kitCategory;
+    /** The packing-list buckets this product belongs to — powers the survey's "what matters most
+     * to you" question. Ordered: the first is the primary one the storefront groups a kit by, the
+     * rest widen what the product matches. Not required at the schema level — enforcing it would
+     * break saving any other field on every product that predates this field. The admin form is
+     * the real enforcement point. */
+    private List<String> kitCategories = new ArrayList<>();
 
     @Indexed
     private boolean active = true;

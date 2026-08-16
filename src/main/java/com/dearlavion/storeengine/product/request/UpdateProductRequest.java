@@ -16,7 +16,7 @@ public record UpdateProductRequest(
         List<String> transportModes,
         List<String> durations,
         List<String> genders,
-        String kitCategory,
+        List<String> kitCategories,
         Boolean active,
         List<String> linkedProductIds
 ) {

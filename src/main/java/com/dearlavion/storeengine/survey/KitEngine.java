@@ -86,9 +86,11 @@ public final class KitEngine {
         return product.genders().contains(answer) ? GENDER_WEIGHT : 0;
     }
 
+    /** Awarded once for any overlap, not per match — a product tagged with many buckets shouldn't
+     * outscore a well-matched one simply by covering more of them. */
     private static double kitCategoryBoost(EngineProduct product, List<String> selected) {
-        if (selected == null || selected.isEmpty() || product.kitCategory() == null) return 0;
-        return selected.contains(product.kitCategory()) ? KIT_CATEGORY_WEIGHT : 0;
+        if (selected == null || selected.isEmpty() || product.kitCategories().isEmpty()) return 0;
+        return product.kitCategories().stream().anyMatch(selected::contains) ? KIT_CATEGORY_WEIGHT : 0;
     }
 
     private static int effectivePartySize(KitAnswers a) {

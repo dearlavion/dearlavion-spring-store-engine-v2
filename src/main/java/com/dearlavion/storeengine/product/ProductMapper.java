@@ -28,7 +28,7 @@ public class ProductMapper {
         product.setTransportModes(dto.transportModes() != null ? dto.transportModes() : List.of());
         product.setDurations(dto.durations() != null ? dto.durations() : List.of());
         product.setGenders(dto.genders() != null ? dto.genders() : List.of());
-        product.setKitCategory(dto.kitCategory());
+        product.setKitCategories(dto.kitCategories() != null ? dto.kitCategories() : List.of());
         product.setActive(true);
         product.setLinkedProductIds(dto.linkedProductIds() != null ? dto.linkedProductIds() : List.of());
         product.setCreatedAt(now);
@@ -53,7 +53,7 @@ public class ProductMapper {
         if (dto.transportModes() != null) product.setTransportModes(dto.transportModes());
         if (dto.durations() != null) product.setDurations(dto.durations());
         if (dto.genders() != null) product.setGenders(dto.genders());
-        if (dto.kitCategory() != null) product.setKitCategory(dto.kitCategory());
+        if (dto.kitCategories() != null) product.setKitCategories(dto.kitCategories());
         if (dto.active() != null) product.setActive(dto.active());
         if (dto.linkedProductIds() != null) product.setLinkedProductIds(dto.linkedProductIds());
         product.setUpdatedAt(Instant.now());

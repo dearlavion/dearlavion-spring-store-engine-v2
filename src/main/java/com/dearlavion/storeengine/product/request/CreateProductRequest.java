@@ -22,7 +22,7 @@ public record CreateProductRequest(
         List<String> transportModes,
         List<String> durations,
         List<String> genders,
-        String kitCategory,
+        List<String> kitCategories,
         List<String> linkedProductIds
 ) {
 }

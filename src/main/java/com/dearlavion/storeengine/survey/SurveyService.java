@@ -45,7 +45,7 @@ public class SurveyService {
                 p.getTransportModes() != null ? p.getTransportModes() : List.of(),
                 p.getDurations() != null ? p.getDurations() : List.of(),
                 p.getGenders() != null ? p.getGenders() : List.of(),
-                p.getKitCategory(),
+                p.getKitCategories() != null ? p.getKitCategories() : List.of(),
                 p.isPopular(),
                 p.isTested()
         );

@@ -14,7 +14,7 @@ public record EngineProduct(
         List<String> transportModes,
         List<String> durations,
         List<String> genders,
-        String kitCategory,
+        List<String> kitCategories,
         boolean popular,
         boolean tested
 ) {
