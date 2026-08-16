@@ -8,6 +8,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.List;
 
 /**
@@ -68,6 +70,14 @@ public class Product {
 
     @Indexed
     private boolean active = true;
+
+    /**
+     * Values for admin-created master-data collections, keyed by collection key
+     * ({@code {"fabric": ["Linen"], "color": ["Navy"]}}). The nine built-in axes above stay typed
+     * columns because the engine gives each bespoke meaning; anything registered at runtime has no
+     * column to live in, so it lands here. Empty for a product tagged only on the built-ins.
+     */
+    private Map<String, List<String>> tags = new LinkedHashMap<>();
 
     /** Admin-curated explicit "suggested with" links (product ids). */
     private List<String> linkedProductIds = new ArrayList<>();

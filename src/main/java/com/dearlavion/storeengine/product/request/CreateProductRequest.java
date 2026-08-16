@@ -3,6 +3,7 @@ package com.dearlavion.storeengine.product.request;
 import jakarta.validation.constraints.NotBlank;
 
 import java.util.List;
+import java.util.Map;
 
 /** destinations/seasons/parties/activities/transportModes/kitCategory are plain strings, not a
  * closed enum — the option lists are admin-editable (see dearlavion-spring-master-data-service), so there's no fixed
@@ -23,6 +24,7 @@ public record CreateProductRequest(
         List<String> durations,
         List<String> genders,
         List<String> kitCategories,
+        Map<String, List<String>> tags,
         List<String> linkedProductIds
 ) {
 }

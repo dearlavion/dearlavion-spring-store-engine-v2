@@ -1,6 +1,7 @@
 package com.dearlavion.storeengine.product.request;
 
 import java.util.List;
+import java.util.Map;
 
 public record UpdateProductRequest(
         String name,
@@ -17,6 +18,7 @@ public record UpdateProductRequest(
         List<String> durations,
         List<String> genders,
         List<String> kitCategories,
+        Map<String, List<String>> tags,
         Boolean active,
         List<String> linkedProductIds
 ) {

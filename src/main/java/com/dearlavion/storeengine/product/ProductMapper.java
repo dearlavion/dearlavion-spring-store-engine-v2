@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class ProductMapper {
@@ -29,6 +30,7 @@ public class ProductMapper {
         product.setDurations(dto.durations() != null ? dto.durations() : List.of());
         product.setGenders(dto.genders() != null ? dto.genders() : List.of());
         product.setKitCategories(dto.kitCategories() != null ? dto.kitCategories() : List.of());
+        product.setTags(dto.tags() != null ? dto.tags() : Map.of());
         product.setActive(true);
         product.setLinkedProductIds(dto.linkedProductIds() != null ? dto.linkedProductIds() : List.of());
         product.setCreatedAt(now);
@@ -54,6 +56,7 @@ public class ProductMapper {
         if (dto.durations() != null) product.setDurations(dto.durations());
         if (dto.genders() != null) product.setGenders(dto.genders());
         if (dto.kitCategories() != null) product.setKitCategories(dto.kitCategories());
+        if (dto.tags() != null) product.setTags(dto.tags());
         if (dto.active() != null) product.setActive(dto.active());
         if (dto.linkedProductIds() != null) product.setLinkedProductIds(dto.linkedProductIds());
         product.setUpdatedAt(Instant.now());
