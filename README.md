@@ -73,9 +73,13 @@ outright**, not merely down-ranked — a swimsuit has no place in a winter mount
 
 | Product's tags on that axis | Result |
 | --- | --- |
+| empty, contains `All`, **or lists every value the catalog uses** | +0.5 (`AXIS_ALL`) — eligible but dampened |
 | contains the shopper's answer | +2 (`AXIS_MATCH`) |
-| empty, or contains `All` | +0.5 (`AXIS_ALL`) — eligible but dampened |
 | tagged, but not with this answer | **excluded** |
+
+The "lists every value" case matters: `[Beach, Mountain, City]` claims exactly what `All` claims,
+but scored naively it would earn 2 where the honest `All` earns 0.5 — paying four times more for
+the same non-claim. Exhaustive tagging doesn't outrank honesty.
 
 ### Step 2 — soft boosts (ranking only, never exclude)
 
@@ -83,37 +87,80 @@ An untagged product suits everything, so tagging can only ever lift a product.
 
 | Signal | Weight |
 | --- | --- |
-| Activities | **+3 per overlapping activity** (uncapped — the strongest differentiator) |
+| Activities | **+3 per overlapping activity, capped at +6** — capped for the same reason kit category is: a product tagged into many activities shouldn't win on breadth of tagging alone |
 | Kit categories | **+5** first match, **+1.5** each further match, **capped at +8** (so 1 = 5, 2 = 6.5, 3+ = 8) |
-| Transportation | +1.5 if the product lists the answer |
-| Trip length | +1.5 (matched on Duration's stable `code`, not its label) |
-| Gender | +1.5 |
+| Transportation, trip length, gender | **+1.5 each** (`TRIP_SIGNAL_WEIGHT`) — attributes of the trip, not something the shopper asked to prioritise. Trip length matches on Duration's stable `code`, not its label |
 | Popular | +0.8 |
 | Field-tested | +0.5 |
-| Interaction nudges | +1 to +1.5 — long trip × laundry/packing items, group × shared/family items, beach + rainy × dry/waterproof items |
 
-**`Essentials Kit` counts only when it isn't the only pick.** It's the basics everyone packs, so
-selecting it *alongside* another kit is a considered "and the basics too" and scores normally.
-Selecting it *alone* scores nothing: it's the broadest bucket, and handing the largest boost to a
-large share of the catalog on one pick flattens the ranking, leaving nothing to order the kit by.
-Either way those items still reach kits through the capped generic pool in step 3.
+There are no hidden nudges. Earlier versions matched words in product *names* — `laundry|packing|cube`
+for long trips, `group|shared|family` for groups — which was invisible in the admin UI and broke on
+a rename. Those axes are now real tags (`durations`, `parties`), so a product that belongs on a long
+trip should say so with `durations: [medium, long]` and be scored like anything else.
 
-| Shopper picks | Effect on a product tagged `Essentials Kit` |
-| --- | --- |
-| `[Essentials Kit]` | nothing — baseline ignored |
-| `[Essentials Kit, Weather Kit]` | +5 (one match) |
-| `[Essentials Kit, Weather Kit]` on a product tagged both | +6.5 (two matches) |
+**`Essentials Kit` never earns a place on its own.** It's the broadest bucket in the catalog, so a
+product has to match one of the shopper's *other* picked kits first — this then adds to that. A
+laundry bag tagged `[Essentials Kit, Laundry Kit]` is packed when Laundry was asked for, not merely
+because Essentials was ticked alongside six other things.
+
+| Product's kits | Shopper picks | Boost |
+| --- | --- | --- |
+| `[Essentials Kit, Laundry Kit]` | `[Essentials Kit, Weather Kit]` | **0** — only the baseline matched |
+| `[Essentials Kit, Laundry Kit]` | `[Essentials Kit, Laundry Kit]` | **6.5** — Laundry, plus the baseline |
+| `[Laundry Kit]` | `[Laundry Kit]` | **5** — one match |
+| `[Essentials Kit]` | anything | **0** — the baseline is never enough alone |
 
 ### Step 3 — selection
 
-Kit size comes from trip length (`day` 10, `short` 14, `medium` 20, `long` 26), widened for larger
-parties, clamped to 10–30. Slots fill in three passes:
+**A product that earned nothing in step 2 is not recommended at all.** Neutral on all three axis
+tags and no activity, kit-category, transport, trip-length or gender hit means it fits this trip no
+better than any other — and being untagged, or tagged for something the shopper didn't ask for, is
+not a reason to pack it. The kit comes back shorter rather than padded.
 
-1. **Generic** — the top *fits-everything* items, capped at **4** (`PURE_CORE_CAP`) so they can't
-   define the kit. A product is "generic" only if it earned nothing in step 2 at all.
-2. **Breadth** — the best remaining item of each **product category** (Clothing, Electronics, …),
-   so the kit spans the trip rather than stacking one type.
-3. **Depth** — highest scores first, until the kit is full.
+Everything that survives is then split into two tiers, because a single additive score let an
+incidental tag outbid an explicit request — a swimsuit matching the selected activity outscored the
+toiletry kit the shopper actually asked for. No weight tuning fixes that reliably; separating demand
+from relevance does.
+
+| Tier | Definition |
+| --- | --- |
+| **Requested** | Matches at least one *non-baseline* kit category the shopper picked — i.e. exactly when the kit-category boost is non-zero |
+| **Related** | Earned something (an activity, destination or season match) but isn't in a kit they asked for |
+
+Kit size comes from trip length (`day` 10, `short` 14, `medium` 20, `long` 26), widened for larger
+parties, clamped to 10–30 — a ceiling, not a quota. Slots fill in three passes:
+
+1. **Breadth** — the best still-available *requested* item for each kit the shopper picked, so the
+   kit spans what they asked for. Keyed on kit category rather than the shop's product category: a
+   shopper asking for a Toiletry Kit shouldn't be guaranteed one of every department, which used to
+   hand a slot to the only Beauty & Grooming product however weakly it fitted.
+2. **Depth** — the rest of the requested tier, highest score first.
+3. **Round it out** — related items, held to a minority of the finished kit.
+
+**The related tier is capped as a share of the kit as built, not of the target size.** Target comes
+from trip length, so on a long trip it's 26 whether the shopper asked for one kit or six; measured
+against that, the related tier had a budget it could never exhaust and a one-kit survey still came
+back two-thirds full of things nobody asked for. Measured against what was actually requested, the
+kit scales with demand:
+
+| Requested items found | Related allowed | Finished kit |
+| --- | --- | --- |
+| 12 | 8 | 20 (60% requested) |
+| 5 | 3 | 8 |
+| 1 | 2 (`MIN_RELATED` floor) | 3 |
+| 0 — nothing picked, or nothing matched | fills the whole target | up to 26 |
+
+The floor exists because a strict share starves the narrow cases: one requested item earns a budget
+of zero, so asking for a thinly-stocked kit returned a kit of one. Related items must not
+*dominate*; they aren't forbidden. That last row matters too — kit category is Optional in Kit
+Settings, and with nothing requested there's nothing for the related tier to be a minority of.
+
+**No product category may exceed `max(3, target / 5)` slots** (10 → 3, 26 → 5), so a kit can't come
+back as five near-identical travel accessories. It scales with kit size rather than binding hard on
+the long trips that legitimately want more of everything.
+
+Output order is requested items first, then related, each block by score — a flat score sort buried
+what the shopper asked for among the extras, which reads as not having listened.
 
 ### Worked example
 
