@@ -37,7 +37,10 @@ server:
   address: 0.0.0.0
 
 app:
-  auth-server-url: ${AUTH_SERVER_URL:http://localhost:8081}
+  # 9081 is where authentication-service-v3 runs, and what master-data-service already
+  # defaults to. The old 8081 default pointed at nothing, so a start without an explicit
+  # AUTH_SERVER_URL left every authenticated call failing and the UI logging users out.
+  auth-server-url: ${AUTH_SERVER_URL:http://localhost:9081}
   # Empty = tenant check disabled, matching the NestJS default.
   expected-customer: ${EXPECTED_CUSTOMER:}
   admin-usernames: ${ADMIN_USERNAMES:admin}
