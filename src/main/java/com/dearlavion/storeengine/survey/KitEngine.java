@@ -125,9 +125,16 @@ public final class KitEngine {
         return AXIS_MISMATCH;
     }
 
-    /** The three axis domains, computed once per kit build. */
-    private record AxisDomains(Set<String> destinations, Set<String> seasons, Set<String> parties) {
-        static AxisDomains of(List<EngineProduct> products) {
+    /**
+     * The value sets each axis actually uses across the catalog.
+     *
+     * <p>Public because it belongs to the cached catalog snapshot rather than to a single kit build:
+     * it must be derived from the <em>whole</em> catalog. Computed from a filtered subset, the
+     * domains shrink and products that legitimately matched one specific value start reading as
+     * "covers everything" — measured at 13 of 20 candidates flipping from AXIS_MATCH to AXIS_ALL.
+     */
+    public record AxisDomains(Set<String> destinations, Set<String> seasons, Set<String> parties) {
+        public static AxisDomains of(List<EngineProduct> products) {
             return new AxisDomains(
                     domainOf(products, EngineProduct::destinations),
                     domainOf(products, EngineProduct::seasons),
@@ -292,7 +299,14 @@ public final class KitEngine {
      * does.
      */
     public static List<KitPick> buildKit(KitAnswers answers, List<EngineProduct> products) {
-        AxisDomains domains = AxisDomains.of(products);
+        return buildKit(answers, products, AxisDomains.of(products));
+    }
+
+    /**
+     * As above, with the axis domains supplied rather than derived — the caller holds them because
+     * they describe the whole catalog and only change when it does. See {@link AxisDomains}.
+     */
+    public static List<KitPick> buildKit(KitAnswers answers, List<EngineProduct> products, AxisDomains domains) {
         List<Scored> eligible = products.stream()
                 .map(p -> score(p, answers, domains))
                 .filter(Objects::nonNull)

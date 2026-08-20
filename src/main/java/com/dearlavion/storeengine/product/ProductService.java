@@ -2,6 +2,7 @@ package com.dearlavion.storeengine.product;
 
 import com.dearlavion.storeengine.common.PageResponse;
 import com.dearlavion.storeengine.common.Slugify;
+import com.dearlavion.storeengine.catalog.CatalogCache;
 import com.dearlavion.storeengine.common.exception.NotFoundException;
 import com.dearlavion.storeengine.product.model.Product;
 import com.dearlavion.storeengine.product.model.ProductFilter;
@@ -30,6 +31,8 @@ public class ProductService {
     // Lazy: ProductItemService reads products, so constructor injection either way
     // round would be a cycle.
     private final ObjectProvider<ProductItemService> productItems;
+    // Safe to inject directly: the cache reads through repositories, not through this service.
+    private final CatalogCache catalog;
 
     public PageResponse<Product> list(ProductFilter f) {
         int page = f.page() != null ? f.page() : 0;
@@ -62,7 +65,9 @@ public class ProductService {
     // ---- admin ----
 
     public Product create(CreateProductRequest dto) {
-        return repository.save(mapper.toEntity(dto, uniqueId(dto.name())));
+        Product saved = repository.save(mapper.toEntity(dto, uniqueId(dto.name())));
+        catalog.refresh();
+        return saved;
     }
 
     /** id is fixed at creation and never changes here, even when dto.name() renames the product —
@@ -71,7 +76,9 @@ public class ProductService {
     public Product update(String id, UpdateProductRequest dto) {
         Product product = requireById(id);
         mapper.applyPatch(product, dto);
-        return repository.save(product);
+        Product saved = repository.save(product);
+        catalog.refresh();
+        return saved;
     }
 
     /**
@@ -86,6 +93,11 @@ public class ProductService {
         repository.save(product);
         int items = productItems.getObject().deactivateForProduct(id);
         if (items > 0) log.info("Deactivated {} item(s) under product {}", items, id);
+        // Refreshes twice on this path — deactivateForProduct already did one. Left as is: a
+        // duplicate rebuild costs ~100ms on a rare admin action, while a "skip it when called
+        // internally" rule would be a caller-dependent invariant someone eventually breaks. Over-
+        // refreshing is a performance nit; under-refreshing is silent wrong data.
+        catalog.refresh();
     }
 
     public Product requireById(String id) {

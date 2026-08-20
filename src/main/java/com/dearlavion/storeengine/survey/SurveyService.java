@@ -1,10 +1,9 @@
 package com.dearlavion.storeengine.survey;
 
-import com.dearlavion.storeengine.product.ProductService;
+import com.dearlavion.storeengine.catalog.CatalogCache;
+import com.dearlavion.storeengine.catalog.CatalogSnapshot;
 import com.dearlavion.storeengine.product.model.Product;
-import com.dearlavion.storeengine.productitem.ProductItemService;
 import com.dearlavion.storeengine.productitem.model.ProductItem;
-import com.dearlavion.storeengine.survey.model.EngineProduct;
 import com.dearlavion.storeengine.survey.model.KitAnswers;
 import com.dearlavion.storeengine.survey.model.KitChecklistItem;
 import com.dearlavion.storeengine.survey.model.KitPick;
@@ -16,8 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -30,26 +27,8 @@ public class SurveyService {
     private static final Map<String, Integer> DURATION_TIER = Map.of("short", 1, "medium", 2, "long", 3);
 
     private final SavedSurveyRepository repository;
-    private final ProductService products;
-    private final ProductItemService productItems;
+    private final CatalogCache catalog;
 
-    private static EngineProduct toEngineProduct(Product p) {
-        return new EngineProduct(
-                p.getId(),
-                p.getName(),
-                p.getCategory(),
-                p.getDestinations() != null ? p.getDestinations() : List.of(),
-                p.getSeasons() != null ? p.getSeasons() : List.of(),
-                p.getParties() != null ? p.getParties() : List.of(),
-                p.getActivities() != null ? p.getActivities() : List.of(),
-                p.getTransportModes() != null ? p.getTransportModes() : List.of(),
-                p.getDurations() != null ? p.getDurations() : List.of(),
-                p.getGenders() != null ? p.getGenders() : List.of(),
-                p.getKitCategories() != null ? p.getKitCategories() : List.of(),
-                p.isPopular(),
-                p.isTested()
-        );
-    }
 
     /** The size tier this trip wants: longer trips + bigger groups -> larger sizes (1-3). */
     private static int desiredSizeTier(SurveyAnswersRequest a) {
@@ -78,26 +57,25 @@ public class SurveyService {
 
     /** Score the catalog, then resolve each pick to the trip-appropriate SKU (size). */
     private RunEngineResult runEngine(SurveyAnswersRequest answers) {
-        List<Product> active = products.allActive();
+        // One in-memory read replaces two Mongo round trips, the per-request byId map and the
+        // per-request axis-domain rebuild. Taken once so a concurrent refresh can't swap the
+        // catalog underneath a half-built response.
+        CatalogSnapshot snapshot = catalog.get();
+
         KitAnswers kitAnswers = new KitAnswers(
                 answers.destinations() != null ? answers.destinations() : List.of(),
                 answers.season(), answers.party(), answers.partySize(), answers.duration(),
                 answers.activities(), answers.transportation(), answers.gender(), answers.priorityCategories()
         );
-        List<EngineProduct> engineProducts = active.stream().map(SurveyService::toEngineProduct).toList();
-        List<KitPick> picks = KitEngine.buildKit(kitAnswers, engineProducts);
-        Map<String, Product> byId = new HashMap<>();
-        for (Product p : active) byId.put(p.getId(), p);
-        List<Product> matchedProducts = picks.stream().map(pk -> byId.get(pk.productId())).filter(Objects::nonNull).toList();
+        List<KitPick> picks = KitEngine.buildKit(kitAnswers, snapshot.products(), snapshot.domains());
+        List<Product> matchedProducts = picks.stream()
+                .map(pk -> snapshot.byId().get(pk.productId()))
+                .filter(Objects::nonNull)
+                .toList();
 
         // Resolve the right size per product for this trip.
         int tier = desiredSizeTier(answers);
-        List<String> productIds = picks.stream().map(KitPick::productId).toList();
-        List<ProductItem> items = productItems.activeForProducts(productIds);
-        Map<String, List<ProductItem>> itemsByProduct = new HashMap<>();
-        for (ProductItem it : items) {
-            itemsByProduct.computeIfAbsent(it.getProductId(), k -> new ArrayList<>()).add(it);
-        }
+        Map<String, List<ProductItem>> itemsByProduct = snapshot.itemsByProduct();
 
         List<KitChecklistItem> checklist = picks.stream().map(pk -> {
             ProductItem item = pickSizedItem(itemsByProduct.getOrDefault(pk.productId(), List.of()), tier);

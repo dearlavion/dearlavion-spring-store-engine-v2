@@ -40,6 +40,16 @@ app:
   # 9081 is where authentication-service-v3 runs, and what master-data-service already
   # defaults to. The old 8081 default pointed at nothing, so a start without an explicit
   # AUTH_SERVER_URL left every authenticated call failing and the UI logging users out.
+  # Hold the active catalog in memory instead of reading Mongo on every survey (63 KB today).
+  # Written out explicitly rather than defaulted in an annotation: this service has already been
+  # bitten three times by a wrong value hiding in a default nobody could see.
+  #
+  # false -> PassThroughCatalogCache, the original per-request read. Always current, ~52 req/s.
+  # true  -> InMemoryCatalogCache. All seven product/product-item write methods refresh it, so an
+  #          admin's edit reaches surveys immediately; POST /admin/catalog/refresh covers changes
+  #          made outside the app.
+  catalog-cache-enabled: ${CATALOG_CACHE_ENABLED:true}
+
   auth-server-url: ${AUTH_SERVER_URL:http://localhost:9081}
   # Empty = tenant check disabled, matching the NestJS default.
   expected-customer: ${EXPECTED_CUSTOMER:}
