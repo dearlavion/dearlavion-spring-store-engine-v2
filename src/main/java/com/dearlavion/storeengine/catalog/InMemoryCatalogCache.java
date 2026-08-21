@@ -32,10 +32,11 @@ public class InMemoryCatalogCache implements CatalogCache {
      */
     @PostConstruct
     void loadOnStartup() {
+        long startedAt = System.currentTimeMillis();
         CatalogSnapshot loaded = loader.load();
         snapshot.set(loaded);
-        log.info("Catalog snapshot loaded at startup: {} products, {} items.",
-                loaded.productCount(), loaded.itemCount());
+        log.info("Catalog cache RESET [startup] in {}ms — {} products, {} items.",
+                System.currentTimeMillis() - startedAt, loaded.productCount(), loaded.itemCount());
     }
 
     @Override
@@ -49,19 +50,33 @@ public class InMemoryCatalogCache implements CatalogCache {
      * absent here, and the log plus the admin-visible builtAt make the staleness discoverable.
      */
     @Override
-    public CatalogSnapshot refresh() {
+    public CatalogSnapshot refresh(String reason) {
+        CatalogSnapshot previous = snapshot.get();
+        long startedAt = System.currentTimeMillis();
         try {
             CatalogSnapshot loaded = loader.load();
             snapshot.set(loaded);
-            log.info("Catalog snapshot refreshed: {} products, {} items.",
-                    loaded.productCount(), loaded.itemCount());
+            log.info("Catalog cache RESET [{}] in {}ms — {}, {}.",
+                    reason, System.currentTimeMillis() - startedAt,
+                    delta("products", previous == null ? -1 : previous.productCount(), loaded.productCount()),
+                    delta("items", previous == null ? -1 : previous.itemCount(), loaded.itemCount()));
             return loaded;
         } catch (RuntimeException e) {
-            CatalogSnapshot current = snapshot.get();
-            log.error("Catalog snapshot refresh failed; still serving the snapshot built at {}.",
-                    current != null ? current.builtAt() : "(none)", e);
-            if (current == null) throw e;
-            return current;
+            log.error("Catalog cache reset FAILED [{}] after {}ms; still serving the snapshot built at {}.",
+                    reason, System.currentTimeMillis() - startedAt,
+                    previous != null ? previous.builtAt() : "(none)", e);
+            if (previous == null) throw e;
+            return previous;
         }
+    }
+
+    /**
+     * Shows movement rather than just a total: "41 -> 42 products" makes it obvious the reset picked
+     * up a real change, while "41 products (unchanged)" is the tell that a write didn't land, or
+     * that something is refreshing far more often than the catalog is actually changing.
+     */
+    private static String delta(String noun, int before, int after) {
+        if (before < 0) return after + " " + noun;
+        return before == after ? after + " " + noun + " (unchanged)" : before + " -> " + after + " " + noun;
     }
 }

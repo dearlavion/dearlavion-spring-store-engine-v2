@@ -3,6 +3,8 @@ package com.dearlavion.storeengine.catalog;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,8 +26,13 @@ import java.time.Instant;
 public class AdminCatalogController {
 
     private final CatalogCache catalog;
+    private final CatalogRefreshScheduler scheduler;
 
-    public record CatalogStatus(Instant builtAt, int products, int items, boolean cached) {
+    /** @param cached false in pass-through mode, where builtAt is simply "just now" every time. */
+    public record CatalogStatus(Instant builtAt, int products, int items, boolean cached, String refreshCron) {
+    }
+
+    public record UpdateCatalogCacheRequest(String refreshCron) {
     }
 
     @GetMapping("/status")
@@ -35,11 +42,21 @@ public class AdminCatalogController {
 
     @PostMapping("/refresh")
     public CatalogStatus refresh() {
-        return describe(catalog.refresh());
+        return describe(catalog.refresh("admin pressed reset"));
+    }
+
+    /**
+     * Sets (or clears, with a blank value) the automatic refresh schedule. An invalid expression is
+     * rejected here rather than accepted and silently never fired.
+     */
+    @PutMapping("/settings")
+    public CatalogStatus updateSettings(@RequestBody UpdateCatalogCacheRequest dto) {
+        scheduler.save(dto.refreshCron());
+        return describe(catalog.get());
     }
 
     private CatalogStatus describe(CatalogSnapshot snapshot) {
         return new CatalogStatus(snapshot.builtAt(), snapshot.productCount(), snapshot.itemCount(),
-                catalog instanceof InMemoryCatalogCache);
+                catalog instanceof InMemoryCatalogCache, scheduler.current().getRefreshCron());
     }
 }

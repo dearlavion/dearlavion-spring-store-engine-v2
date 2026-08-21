@@ -45,9 +45,9 @@ app:
   # bitten three times by a wrong value hiding in a default nobody could see.
   #
   # false -> PassThroughCatalogCache, the original per-request read. Always current, ~52 req/s.
-  # true  -> InMemoryCatalogCache. All seven product/product-item write methods refresh it, so an
-  #          admin's edit reaches surveys immediately; POST /admin/catalog/refresh covers changes
-  #          made outside the app.
+  # true  -> InMemoryCatalogCache. Nothing refreshes it on write: a saved product reaches surveys
+  #          only when an admin presses reset (POST /admin/catalog/refresh) or the configured cron
+  #          fires. Staging semantics, deliberately.
   catalog-cache-enabled: ${CATALOG_CACHE_ENABLED:true}
 
   auth-server-url: ${AUTH_SERVER_URL:http://localhost:9081}

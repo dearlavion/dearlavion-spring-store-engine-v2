@@ -34,7 +34,7 @@ class CatalogCacheTest {
         cache.loadOnStartup();
         assertThat(cache.get().builtAt()).isEqualTo(first);
 
-        cache.refresh();
+        cache.refresh("test");
         assertThat(cache.get().builtAt()).isEqualTo(second);
     }
 
@@ -49,7 +49,7 @@ class CatalogCacheTest {
 
         InMemoryCatalogCache cache = new InMemoryCatalogCache(loader);
         cache.loadOnStartup();
-        CatalogSnapshot afterFailure = cache.refresh();
+        CatalogSnapshot afterFailure = cache.refresh("test");
 
         assertThat(afterFailure.builtAt()).isEqualTo(good);
         assertThat(cache.get().builtAt()).isEqualTo(good);
@@ -63,7 +63,7 @@ class CatalogCacheTest {
 
         InMemoryCatalogCache cache = new InMemoryCatalogCache(loader);
 
-        assertThatThrownBy(cache::refresh).isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(() -> cache.refresh("test")).isInstanceOf(IllegalStateException.class);
     }
 
     @Test
@@ -74,7 +74,7 @@ class CatalogCacheTest {
         PassThroughCatalogCache cache = new PassThroughCatalogCache(loader);
         cache.get();
         cache.get();
-        cache.refresh();
+        cache.refresh("test");
 
         Mockito.verify(loader, Mockito.times(3)).load();
     }

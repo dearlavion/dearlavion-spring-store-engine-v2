@@ -39,7 +39,8 @@ public class PassThroughCatalogCache implements CatalogCache {
 
     /** Nothing is held, so there is nothing to invalidate; returns a freshly loaded snapshot. */
     @Override
-    public CatalogSnapshot refresh() {
+    public CatalogSnapshot refresh(String reason) {
+        log.debug("Catalog reset requested [{}] but caching is off — nothing to reset.", reason);
         return loader.load();
     }
 }

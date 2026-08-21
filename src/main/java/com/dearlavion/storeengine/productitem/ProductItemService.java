@@ -1,6 +1,5 @@
 package com.dearlavion.storeengine.productitem;
 
-import com.dearlavion.storeengine.catalog.CatalogCache;
 import com.dearlavion.storeengine.common.PageResponse;
 import com.dearlavion.storeengine.common.exception.NotFoundException;
 import com.dearlavion.storeengine.productitem.model.ProductItem;
@@ -27,8 +26,6 @@ public class ProductItemService {
     private final ProductItemRepository repository;
     private final MongoTemplate mongoTemplate;
     private final ProductItemMapper mapper;
-    // Items decide which SKU a kit recommends, so the snapshot is stale the moment one changes.
-    private final CatalogCache catalog;
 
     /** The main storefront listing (Shop) — every active, purchasable item across the whole
      * catalog, joined with its parent Product for tag filtering/display. filter.id() narrows to a
@@ -72,17 +69,13 @@ public class ProductItemService {
     }
 
     public ProductItem create(CreateProductItemRequest dto) {
-        ProductItem saved = repository.save(mapper.toEntity(dto));
-        catalog.refresh();
-        return saved;
+        return repository.save(mapper.toEntity(dto));
     }
 
     public ProductItem update(String id, UpdateProductItemRequest dto) {
         ProductItem item = getById(id);
         mapper.applyPatch(item, dto);
-        ProductItem saved = repository.save(item);
-        catalog.refresh();
-        return saved;
+        return repository.save(item);
     }
 
     /** Soft delete (active=false) — matches Product's own delete convention. */
@@ -91,7 +84,6 @@ public class ProductItemService {
         item.setActive(false);
         item.setUpdatedAt(Instant.now());
         repository.save(item);
-        catalog.refresh();
     }
 
     /**
@@ -106,7 +98,6 @@ public class ProductItemService {
         Instant now = Instant.now();
         items.forEach(i -> { i.setActive(false); i.setUpdatedAt(now); });
         repository.saveAll(items);
-        catalog.refresh();
         return items.size();
     }
 }

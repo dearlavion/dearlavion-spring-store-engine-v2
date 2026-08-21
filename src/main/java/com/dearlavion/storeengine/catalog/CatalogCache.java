@@ -19,6 +19,16 @@ public interface CatalogCache {
     /** The current snapshot. Never null once the application has started. */
     CatalogSnapshot get();
 
-    /** Rebuild from the database and publish the result. Returns the new snapshot. */
-    CatalogSnapshot refresh();
+    /**
+     * Rebuild from the database and publish the result.
+     *
+     * @param reason what triggered this, logged verbatim, so the cron and the admin button don't
+     *               produce identical log lines.
+     */
+    CatalogSnapshot refresh(String reason);
+
+    /** For callers with nothing useful to say; prefer the overload above. */
+    default CatalogSnapshot refresh() {
+        return refresh("unspecified");
+    }
 }
